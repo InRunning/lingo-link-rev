@@ -1,0 +1,8 @@
+{
+    "src/background.ts": {
+        "description": "后台service worker"
+    },
+    "src/pages/options/enginsSetting.tsx": {
+        "description": "设置填入"
+    }
+}
