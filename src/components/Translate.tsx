@@ -1,3 +1,10 @@
+/**
+ * 组件：翻译结果展示组件
+ * - 负责显示翻译结果、收藏状态、学习进度等信息
+ * - 支持多种交互功能：收藏、标记已掌握、添加笔记、语音播放等
+ * - 集成翻译API调用，显示加载状态和错误处理
+ * - 提供上下文句子的高亮显示和笔记渲染
+ */
 import { useEffect, useState, useRef } from "react";
 import { CheckCheck, Heart, Undo2, MessageCircle, Pencil } from "lucide-react";
 import Highlight from "./Highlight";
@@ -15,6 +22,18 @@ import CardFooter from "./CardFooter";
 import { useAtom } from "jotai";
 import { settingAtom } from "@/store";
 import RenderRemark from "./RenderRemark";
+
+/**
+ * Translate组件参数接口
+ * @param searchText - 待翻译的文本
+ * @param collectInfo - 收藏信息，包含掌握程度等数据
+ * @param remarkInfo - 备注信息，包含笔记内容和图片
+ * @param onHeartClick - 收藏/取消收藏回调
+ * @param onMasterClick - 标记已掌握/忘记回调
+ * @param onPencilClick - 编辑备注回调
+ * @param currentEngine - 当前使用的翻译引擎
+ * @param onRefresh - 刷新翻译结果回调
+ */
 export default function Translate({
   searchText,
   collectInfo,
@@ -34,39 +53,62 @@ export default function Translate({
   currentEngine: EngineValue;
   onRefresh: () => void;
 }) {
+  // 国际化翻译hook
   const { t } = useTranslation();
   // const { setConversationShow, setMessageList, setConversationEngine } =
   //   useConversationContext();
+  
+  // 全局设置状态
   const [setting] = useAtom(settingAtom);
-  const [loading, setLoading] = useState(false);
-  const [generating, setGenerating] = useState(false);
-  const [translateResult, setTranslateResult] = useState("");
+  
+  // 本地状态管理
+  const [loading, setLoading] = useState(false);         // 加载状态
+  const [generating, setGenerating] = useState(false);   // 生成中状态
+  const [translateResult, setTranslateResult] = useState(""); // 翻译结果
+  
+  // 消息列表引用，用于传递给对话组件
   const messageListRef = useRef<Message[]>([]);
+  
+  // 错误边界处理
   const { showBoundary } = useErrorBoundary();
+  
+  // 判断是否已掌握该词汇
   const isMastered =
     collectInfo &&
     (collectInfo.masteryLevel === 1 || collectInfo.masteryLevel === 2);
+    
+  // 获取源语言和目标语言设置
   const sourceLang =
     setting.sourceLanguage?.language ?? defaultSetting.sourceLanguage.language;
   const targetLang = setting.targetLanguage ?? defaultSetting.targetLanguage;
 
+  /**
+   * 进入对话模式回调
+   * 将当前翻译记录作为预加载消息，切换到AI对话模式
+   */
   const enterConversation = () => {
     // setConversationShow(true);
     // setMessageList(messageListRef.current);
     // setConversationEngine(currentEngine);
   };
+  
+  /**
+   * 翻译请求Effect
+   * 当searchText或currentEngine变化时触发新的翻译请求
+   */
   useEffect(() => {
-    let ignore = false;
+    let ignore = false; // 防止组件卸载后继续更新状态
+    
     translate({
       originText: searchText,
       engine: currentEngine,
       beforeRequest() {
-        setLoading(true);
+        setLoading(true); // 开始加载
       },
       onError(msg) {
         setLoading(false);
         setGenerating(false);
-        showBoundary(msg);
+        showBoundary(msg); // 显示错误信息
       },
       onGenerating(result) {
         if (ignore) {
@@ -74,7 +116,7 @@ export default function Translate({
         }
         setLoading(false);
         setGenerating(true);
-        setTranslateResult(result);
+        setTranslateResult(result); // 显示流式生成结果
       },
       onSuccess(result, messageList) {
         if (ignore) {
@@ -82,17 +124,21 @@ export default function Translate({
         }
         setLoading(false);
         setGenerating(false);
-        setTranslateResult(result);
+        setTranslateResult(result); // 显示最终翻译结果
         if (messageList) {
-          messageListRef.current = messageList;
+          messageListRef.current = messageList; // 保存消息列表用于对话
         }
       },
     });
+    
     return () => {
-      ignore = true;
+      ignore = true; // 组件卸载时忽略状态更新
     };
   }, [searchText, currentEngine, showBoundary]);
+  
   let result;
+  
+  // 加载中状态显示骨架屏
   if (loading) {
     return (
       <div className="flex flex-col gap-2 w-full p-2">
@@ -102,15 +148,21 @@ export default function Translate({
       </div>
     );
   }
+  
   try {
     result = (
       <div className="relative space-y-2 text-[15px] px-2 pb-3 pt-3">
+        {/* 主要翻译结果显示区域 */}
         <div>
           <span>{translateResult}</span>
 
+          {/* 加载动画（流式生成时显示） */}
           {generating && <InputBlink />}
+          
+          {/* 功能按钮组和语音播放 */}
           <span className="align-bottom inline-flex items-center ml-[6px] gap-1">
             <span className=" space-x-1 relative top-[3px]">
+              {/* 收藏按钮 */}
               <span
                 onClick={onHeartClick}
                 data-tip={
@@ -127,6 +179,7 @@ export default function Translate({
                 />
               </span>
 
+              {/* 已掌握/忘记按钮（仅在收藏时显示） */}
               {collectInfo && (
                 <span
                   onClick={onMasterClick}
@@ -144,6 +197,8 @@ export default function Translate({
                   )}
                 </span>
               )}
+              
+              {/* 笔记按钮（仅在收藏且无备注时显示） */}
               {collectInfo && !remarkInfo.content && !remarkInfo.imgs?.length && (
                 <span
                   className="p-[4px] rounded tooltip tooltip-bottom w-[21px] h-[21px] cursor-pointer"
@@ -154,6 +209,8 @@ export default function Translate({
                 </span>
               )}
             </span>
+            
+            {/* 语音播放按钮 */}
             <YoudaoSpeaker
               className="mt-[1px]"
               lang={sourceLang}
@@ -164,6 +221,7 @@ export default function Translate({
           </span>
         </div>
 
+        {/* 备注内容显示区域 */}
         { (remarkInfo.content || remarkInfo.imgs?.length) ? (
           <div className="my-2">
             <div
@@ -181,6 +239,8 @@ export default function Translate({
             <RenderRemark content={remarkInfo.content} imgs={remarkInfo.imgs ?? []} />
             </div>
         ) : null}
+        
+        {/* 上下文句子显示区域 */}
         {collectInfo && collectInfo.context && (
           <div className="my-2">
             <div
@@ -206,6 +266,8 @@ export default function Translate({
             </div>
           </div>
         )}
+        
+        {/* 卡片底部操作区域 */}
         <CardFooter
           currentEngine={currentEngine}
           sourceLang={sourceLang}
@@ -217,12 +279,14 @@ export default function Translate({
       </div>
     );
   } catch (error) {
+    // 错误状态显示
     result = (
       <div className="text-center py-[20px] text-[13px] text-red-600">
         {t("An error occurred")}
       </div>
     );
   }
+  
   return (
     <>
       <div>{result}</div>
