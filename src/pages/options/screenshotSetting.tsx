@@ -1,3 +1,7 @@
+/**
+ * 页面：截图 OCR 设置
+ * - 配置百度通用文字识别（标准版）的 AccessToken，用于截图后识别文字。
+ */
 import { useTranslation } from "react-i18next";
 import { Info } from "lucide-react";
 import { useAtom } from "jotai";

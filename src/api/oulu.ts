@@ -1,3 +1,7 @@
+/**
+ * 欧路词典开放平台
+ * - 在指定生词本中新增/删除单词（需用户在设置里配置 Token/语言/生词本）。
+ */
 import { getSetting } from "@/storage/sync"
 
 export const addWordOulu = async (word:string) => {

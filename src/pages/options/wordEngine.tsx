@@ -1,3 +1,9 @@
+/**
+ * 页面：单词查询引擎管理
+ * - 启用/禁用引擎，支持拖拽排序；
+ * - Chat 类引擎支持系统/用户 Prompt 配置；
+ * - 结果写入 `setting.wordEngineList`。
+ */
 import { EngineItem } from "@/types";
 import { defaultSetting, allWordEngineList } from "@/utils/const";
 import { useTranslation } from "react-i18next";

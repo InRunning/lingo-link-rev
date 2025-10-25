@@ -1,3 +1,7 @@
+/**
+ * 有道翻译（页面端）
+ * - 通过 background fetch 拉取有道页面并解析得到译文（`parseYouDaoTranslateHTML`）。
+ */
 import { formateText, sendBackgroundFetch } from "@/utils";
 import type { Language } from "@/types";
 const youdaoSupportLang = ['zh','en', 'ja', 'ko', 'fr'];

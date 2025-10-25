@@ -1,3 +1,7 @@
+/**
+ * 组件：Popup 底部栏
+ * - 展示用户信息、打开设置/生词本、从远端刷新本地生词与备注。
+ */
 import { setSession } from "@/storage/session";
 import { getSetting } from "@/storage/sync";
 import { ExtensionMessage, Setting } from "@/types";

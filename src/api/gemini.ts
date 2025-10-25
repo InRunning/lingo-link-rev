@@ -1,3 +1,8 @@
+/**
+ * Google Gemini 对话实现
+ * - 使用 `streamGenerateContent`，将 chunk JSON 解析为文本增量；
+ * - 兼容 OpenAI 风格的 messageList。
+ */
 import type { Chat, Message } from "@/types/chat";
 import { ChatConstructor } from "./openAI";
 import { getSetting } from "@/storage/sync";

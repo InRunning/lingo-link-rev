@@ -1,3 +1,8 @@
+/**
+ * 模块概述：自定义 OpenAI 兼容接口的对话实现
+ * - 允许用户在设置中配置 `customAIAddress/model/key`，只要兼容 OpenAI Chat Completions 即可使用。
+ * - 与 OpenAIClass 基本一致：支持流式、错误提示、刷新/中止等。
+ */
 import { getSetting } from '@/storage/sync'
 import { toastManager } from '@/components/Toast'
 import type { Chat, Message } from '@/types/chat'
@@ -13,6 +18,10 @@ export interface ChatConstructor {
 }
 
 
+/**
+ * CustomAIClass
+ * - 面向用户自建/第三方代理的 OpenAI 兼容 API。
+ */
 export default class CustomAIClass implements Chat {
   controller: AbortController
   messageList: Message[]
@@ -37,6 +46,10 @@ export default class CustomAIClass implements Chat {
     this.onComplete = onComplete
     this.onClear = onClear
   }
+  /**
+   * 发送/继续对话（使用自定义 API）
+   * @param content 新增的用户消息
+   */
   async sendMessage(content?:string) {
     try {
       this.onBeforeRequest && await this.onBeforeRequest()
@@ -106,17 +119,25 @@ export default class CustomAIClass implements Chat {
       this.onError && this.onError('request failed')
     }
   }
+  /**
+   * 清空上下文并中止请求
+   */
   clearMessage() {
     this.controller.abort('request failed')
     this.messageList = []
     this.onClear && this.onClear()
   }
+  /**
+   * 基于先前上下文重新发送
+   */
   refresh() {
     this.messageList = this.messageList.slice(0, -1);
     this.sendMessage()
   }
+  /**
+   * 主动中止请求
+   */
   abort(){
     this.controller.abort('request failed')
   }
 }
-

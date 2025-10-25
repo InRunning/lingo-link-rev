@@ -1,3 +1,12 @@
+/**
+ * 模块概述：OpenAI 对话实现
+ * - 以 OpenAI Chat Completions 接口为基础，封装消息上下文、流式增量处理、错误展示等。
+ *
+ * 关键点：
+ * - 使用 AbortController 支持中断；
+ * - 通过 handleStream 解析 SSE 流式返回；
+ * - 从同步存储读取 `openAIAddress/openAIKey/openAIModel`，也可通过 `settingConfig` 覆盖。
+ */
 import { defaultSetting } from '@/utils/const'
 import { getSetting } from '@/storage/sync'
 import { toastManager } from '@/components/Toast'
@@ -17,6 +26,10 @@ export interface OpenAIConstructor extends ChatConstructor{
   settingConfig?:Pick<Setting, 'openAIAddress'|'openAIKey'|'openAIModel'>
 }
 
+/**
+ * OpenAIClass
+ * - 实现 Chat 接口的一个具体类，管理消息队列与请求生命周期。
+ */
 export default class OpenAIClass implements Chat {
   controller: AbortController
   messageList: Message[]
@@ -44,6 +57,14 @@ export default class OpenAIClass implements Chat {
     this.onClear = onClear
     this.settingConfig = settingConfig
   }
+  /**
+   * 发送/继续对话
+   * @param content 新增的用户消息，若为空则重放上一轮上下文以继续生成
+   * 行为：
+   * - 读取设置与可选配置，拼装请求；
+   * - 流式读取增量 token，通过 onGenerating 回传；
+   * - 结束时通过 onComplete 输出最终助手消息。
+   */
   async sendMessage(content?:string) {
     try {
       this.onBeforeRequest && await this.onBeforeRequest()
@@ -110,17 +131,25 @@ export default class OpenAIClass implements Chat {
       this.onError && this.onError('request failed')
     }
   }
+  /**
+   * 清空当前会话上下文并中断可能存在的请求
+   */
   clearMessage() {
     this.controller.abort('card is hidden')
     this.messageList = []
     this.onClear && this.onClear()
   }
+  /**
+   * 去掉最后一条（正在生成的）消息，基于之前上下文重新请求
+   */
   refresh() {
     this.messageList = this.messageList.slice(0, -1);
     this.sendMessage()
   }
+  /**
+   * 主动中断请求（例如卡片被关闭时）
+   */
   abort(){
     this.controller.abort('card is hidden')
   }
 }
-

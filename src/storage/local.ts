@@ -1,3 +1,7 @@
+/**
+ * chrome.storage.local 封装
+ * - 保存与设备相关的本地数据（生词本、社区备注、本地缓存模型列表等）。
+ */
 import type { CommunityItemType, Sww } from "@/types/words";
 import { Local } from "@/types";
 import { isSameWord } from "@/utils";

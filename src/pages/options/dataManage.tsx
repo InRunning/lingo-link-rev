@@ -1,3 +1,8 @@
+/**
+ * 页面：数据管理（欧路词典同步）
+ * - 配置欧路开放平台 Token、学习语言、生词本，并控制是否开启同步。
+ * - 通过接口获取欧路生词本列表，持久化到设置中。
+ */
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { RotateCcw } from "lucide-react";

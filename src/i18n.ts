@@ -1,3 +1,8 @@
+/**
+ * i18n 初始化
+ * - 采用 i18next + react-i18next + 语言检测，内置中英文资源。
+ * - Options 与 Popup 均共享同一初始化逻辑。
+ */
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";

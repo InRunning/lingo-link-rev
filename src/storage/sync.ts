@@ -1,3 +1,7 @@
+/**
+ * chrome.storage.sync 封装
+ * - 存储跨设备同步的用户设置（Setting）
+ */
 import { Setting } from "@/types";
 import Browser from "webextension-polyfill";
 export const getSetting = async(): Promise<Setting>=>{

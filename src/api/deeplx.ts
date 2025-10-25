@@ -1,3 +1,7 @@
+/**
+ * DeepLX 翻译（句子）
+ * - 通过用户配置的 `deepLXAddress` 发起请求，返回译文。
+ */
 import { toastManager } from "@/components/Toast";
 import { getSetting } from "@/storage/sync";
 import { sendBackgroundFetch } from "@/utils";

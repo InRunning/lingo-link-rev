@@ -1,3 +1,7 @@
+/**
+ * Hook：监听来自 background 的扩展消息
+ * - 当收到 refreshLocalData 且当前不在 Popup 环境时，刷新本地备注与生词列表。
+ */
 import { ExtensionMessage } from "@/types";
 import { useEffect } from "react";
 import { getList as getStorageSwwList, getRemarkList } from "@/storage/local";

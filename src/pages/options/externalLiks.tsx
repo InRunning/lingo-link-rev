@@ -1,3 +1,8 @@
+/**
+ * 页面：外部链接管理
+ * - 维护常用外部查询链接（如百度翻译、朗文、柯林斯）
+ * - 支持新增/编辑/删除与拖拽排序，结果写入 `setting.externalLinks`
+ */
 import { defaultSetting } from "@/utils/const";
 import { useTranslation } from "react-i18next";
 import { SquarePen, Trash2, RotateCw, Plus } from "lucide-react";

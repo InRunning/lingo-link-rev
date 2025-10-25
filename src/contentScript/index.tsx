@@ -1,3 +1,8 @@
+/**
+ * 内容脚本入口
+ * - 注册自定义元素 <lingo-link> 并在 ShadowDOM 内挂载 React 应用（避免样式冲突）。
+ * - 注入高亮样式，监听全屏切换以保证组件仍存在于正确根节点。
+ */
 import "@/lib/webcomponents-bundle.js";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -9,6 +14,7 @@ import "@/lib/injectScripts";
 import "@/i18n.ts";
 import LingoCard from './lingoCard'
 import {genHighlightStyle} from "@/contentScript/highlightStyle.tsx";
+/** 承载应用的自定义元素（Shadow DOM + React Root） */
 class LingoLink extends HTMLElement {
   constructor() {
     super();
@@ -49,6 +55,9 @@ if (!customElements.get("lingo-link")) {
 } )()
 
 export function SupportFullScreen() { 
+  /**
+   * 监听全屏进入/退出时，重新挂载 lingo-link 到当前根节点，避免 UI 丢失
+   */
   const [v, setV] = useState(0);
   useEffect(() => {
     const handleFullScreen = function () {

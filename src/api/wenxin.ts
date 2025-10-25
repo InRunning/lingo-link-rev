@@ -116,3 +116,7 @@ export default class WenxinClass implements Chat {
     this.controller.abort()
   };
 }
+/**
+ * 文心一言（ERNIE Bot）对话实现
+ * - 通过 AccessToken 进行调用，流式读取增量内容。
+ */

@@ -1,3 +1,7 @@
+/**
+ * 组件：Options 左侧菜单
+ * - 仅负责渲染菜单列表与点击回调，国际化由 i18n 负责。
+ */
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 

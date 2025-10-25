@@ -1,3 +1,7 @@
+/**
+ * 新版有道页面解析（多语种）
+ * - 根据语言（en/ja/ko/fr）选择不同 DOM 结构提取音标与释义。
+ */
 import type { WordData } from "@/types/words";
 
 export function parseYouDaoHTML(html: string, lang: string): WordData {

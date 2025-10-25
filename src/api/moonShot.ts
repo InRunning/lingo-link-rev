@@ -119,4 +119,7 @@ export default class MoonShotClass implements Chat {
     this.controller.abort('card is hidden')
   };
 }
-
+/**
+ * MoonShot 对话实现
+ * - 以 API Key 调用，按 OpenAI 流式格式解析返回。
+ */

@@ -1,3 +1,7 @@
+/**
+ * Popup 应用入口
+ * - 输入搜索与结果展示、底部用户区、错误边界与全局 Toast。
+ */
 import { createRoot } from "react-dom/client";
 import "@/assets/styles/tailwind.css";
 import { useCallback, useEffect, useState } from "react";

@@ -1,3 +1,7 @@
+/**
+ * Options 应用入口
+ * - 组织左侧菜单与右侧对应模块（基础设置/引擎/外链/同步/更新日志/问题/其他）。
+ */
 import { createRoot } from "react-dom/client";
 import "@/assets/styles/tailwind.css";
 import { useState, useEffect, ReactNode } from "react";

@@ -1,3 +1,8 @@
+/**
+ * 页面：扩展设置（通用）
+ * - 账户登录/退出、触发图标、界面语言、选中文本触发方式等基础设置。
+ * - 依赖 jotai 全局 `settingAtom`，通过 `setSetting` 落盘到 `chrome.storage.sync`。
+ */
 import type { InterfaceLanguage } from "@/types";
 import {
   AllLanguage,

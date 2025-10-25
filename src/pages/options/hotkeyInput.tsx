@@ -1,3 +1,7 @@
+/**
+ * 组件：快捷键录入（Options 页面使用）
+ * - 聚焦输入框时记录当前按键组合（hotkeys-js），写入 `setting.shoutcut`
+ */
 import { settingAtom } from '@/store';
 import hotkeys from 'hotkeys-js';
 import { useAtom } from 'jotai';

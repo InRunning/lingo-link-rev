@@ -1,3 +1,7 @@
+/**
+ * 全局类型定义
+ * - 扩展消息、设置项、语言、引擎枚举、社区数据等核心类型集中管理。
+ */
 import { HighlightName, LangCode, defaultSetting } from "@/utils/const";
 import type { CommunityItemType, Sww } from "./words";
 

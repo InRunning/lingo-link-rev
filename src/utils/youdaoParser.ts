@@ -1,3 +1,7 @@
+/**
+ * 有道词典 HTML 解析
+ * - 支持基本释义与柯林斯风格释义解析，产出结构化结果。
+ */
 export interface WordExplain {
   basicResult: {
     phonetic: string[]

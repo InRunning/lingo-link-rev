@@ -1,3 +1,8 @@
+/**
+ * 组件：全局 Toast 通知
+ * - `toastManager` 作为单例入口，任意位置调用 `toastManager.add({type,msg})` 即可；
+ * - `ToastContainer` 渲染通知列表并自动移除。
+ */
 import { useEffect, useState } from "react";
 interface ToastConfig {
   type: "success" | "error" | "info";

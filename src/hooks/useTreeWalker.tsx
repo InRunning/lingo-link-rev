@@ -1,3 +1,9 @@
+/**
+ * Hook：基于 TreeWalker 的页面生词高亮
+ * - 将生词表中未掌握/遗忘的单词在页面中批量标记；
+ * - 监听 DOM 变化动态增量标记；
+ * - 可通过 mouseoverCallback/mouseoutCallback 定制悬停行为。
+ */
 import { swwListAtom } from "@/store";
 import { useAtom } from "jotai";
 import { useEffect, useMemo } from "react";

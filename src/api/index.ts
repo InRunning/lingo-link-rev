@@ -1,3 +1,7 @@
+/**
+ * 统一后端接口封装（https://api.mywords.cc）
+ * - 负责附加 token、错误提示、以及部分上传/多图处理逻辑
+ */
 import { toastManager } from "@/components/Toast";
 import type { CommunityItemType, Sww } from "@/types/words";
 import { getSetting } from "@/storage/sync";
@@ -18,6 +22,9 @@ interface Login {
   res: User;
 }
 
+/**
+ * 统一请求函数：自动附加 token / JSON 头 / 错误处理
+ */
 const request = async (
   url: string,
   options: {
@@ -92,6 +99,9 @@ export const login = async (params: Login["params"]): Promise<Login["res"]> => {
     body: params,
   });
 };
+/**
+ * 使用百度接口检测语种（需要通过 background fetch 以绕过 CORS）
+ */
 export async function baiduDetectLang(text: string) {
   const urlSearchParam = new URLSearchParams({query: text});
   const json = await sendBackgroundFetch({
@@ -103,6 +113,9 @@ export async function baiduDetectLang(text: string) {
     // return langMap[json.lan] || "en";
     return json.lan ?? 'en'
 }
+/**
+ * 将多张 Base64 或远程 URL 统一上传，返回公开可访问的 R2 链接数组
+ */
 export async function uploadMultiBase64(arr: string[]) {  
   const urls:string[] = await Promise.all(
     arr.map(async (base64) => {

@@ -1,3 +1,8 @@
+/**
+ * 页面：引擎设置
+ * - 统一配置各类引擎（OpenAI / Gemini / 文心 / DeepSeek / MoonShot / DeepLX / Custom）。
+ * - OpenAI 提供当前 key 可用模型的拉取功能，并缓存到 `storage.local`。
+ */
 import { useState, useCallback, useEffect } from "react";
 import { toastManager } from "@/components/Toast";
 import { RotateCcw } from "lucide-react";

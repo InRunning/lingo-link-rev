@@ -1,3 +1,9 @@
+/**
+ * 组件：聊天输入框
+ * - 支持 Enter 发送、Shift+Enter 换行；
+ * - 自适应高度，限制最大高度并出现滚动条；
+ * - 通过 onSubmit 将去首尾空格后的内容回传。
+ */
 import { useState, useRef, useEffect } from 'react'
 import SendIcon from './SendIcon'
 //import { useCardContext } from '@/context/cardContext'

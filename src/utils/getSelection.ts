@@ -1,5 +1,5 @@
 /**
- * Returns the selected text
+ * 返回选中文本（兼容输入框/Firefox 行为差异）
  */
 export function getTextFromSelection(selection: Selection | null, win = window): string {
   // When called on an <iframe> that is not displayed (eg. where display: none is set)
@@ -26,16 +26,12 @@ export function getTextFromSelection(selection: Selection | null, win = window):
   return ''
 }
 
-/**
- * Returns the selected text
- */
+/** 返回选中文本（封装 getSelection() 调用） */
 export function getText(win = window): string {
   return getTextFromSelection(win.getSelection(), win)
 }
 
-/**
- * Returns the paragraph containing the selection text.
- */
+/** 返回包含选中文本的段落 */
 export function getParagraphFromSelection(selection: Selection | null): string {
   if (!selection || selection.rangeCount <= 0) {
     return ''
@@ -58,16 +54,12 @@ export function getParagraphFromSelection(selection: Selection | null): string {
     .trim()
 }
 
-/**
- * Returns the paragraph containing the selection text.
- */
+/** 返回包含选中文本的段落（封装 getSelection） */
 export function getParagraph(win = window): string {
   return getParagraphFromSelection(win.getSelection())
 }
 
-/**
- * Returns the sentence containing the selection text.
- */
+/** 返回包含选中文本的句子 */
 export function getSentenceFromSelection(selection: Selection | null): string {
   if (!selection || selection.rangeCount <= 0) {
     return ''
@@ -94,9 +86,7 @@ export function getSentenceFromSelection(selection: Selection | null): string {
     .trim()
 }
 
-/**
- * Returns the sentence containing the selection text.
- */
+/** 返回包含选中文本的句子（封装 getSelection） */
 export function getSentence(win = window): string {
   return getSentenceFromSelection(win.getSelection())
 }

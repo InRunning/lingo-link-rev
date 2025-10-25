@@ -1,3 +1,11 @@
+/**
+ * 工具方法集合
+ * - DOM/窗口计算：位置防溢出、选区检测等
+ * - 后台通信：backgroundFetch/sendBackgroundFetch
+ * - 文本/消息处理：isWord、formateMessage、handleStream
+ * - 图片处理：compressImg、base64ToBlob
+ * - 其他：柯林斯词典 HTML 解析、popup 环境判断
+ */
 import type {
   BackgroundFetchParam,
   EngineValue,
@@ -7,9 +15,13 @@ import type { Sww } from "@/types/words";
 import { Message } from "@/types/chat";
 import { createParser } from "eventsource-parser";
 import type { CollinsWord } from "@/types/index";
+/** 将文本中的换行与多余空白压缩为单空格 */
 export const formateText = (str: string) => {
   return str.replace(/\r\n/g, " ").replace(/\s+/g, " ");
 };
+/**
+ * 根据目标元素的 DOMRect 与期望尺寸，计算浮层不超出窗口的摆放坐标
+ */
 export const preventBeyondWindow = ({
   boxWidth,
   boxHeight,
@@ -65,6 +77,10 @@ export const hasWord = ({
     })
   );
 };
+/**
+ * 在页面上下文直接发起 fetch 请求的工具（非通过后台代理）
+ * - 与 background.ts 中的 backgroundFetch 行为一致，仅运行环境不同
+ */
 export const backgroundFetch = async (param: BackgroundFetchParam) => {
   const { url, method, responseType } = param;
   const options: Record<string, any> = {
@@ -99,6 +115,10 @@ export const backgroundFetch = async (param: BackgroundFetchParam) => {
   });
 };
 
+/**
+ * 通过扩展后台（background）进行跨域请求
+ * - 使用 runtime.sendMessage 发送统一的 fetch 请求参数
+ */
 export const sendBackgroundFetch = async (option: BackgroundFetchParam) => {
     const browser = (await import("webextension-polyfill")).default;
     const message: ExtensionMessage = {
@@ -108,6 +128,10 @@ export const sendBackgroundFetch = async (option: BackgroundFetchParam) => {
     return browser.runtime.sendMessage(message);
   
 };
+/**
+ * 判断输入在当前语言语境下是否可视为一个“词”
+ * - 优先使用 Intl.Segmenter；在不支持且为英文环境时回退为空格分词判断
+ */
 export function isWord({
   input,
   lang,
@@ -136,6 +160,10 @@ export function isWord({
   const iterator = segmenter.segment(text)[Symbol.iterator]();
   return iterator.next().value?.segment === text;
 }
+/**
+ * 针对不同引擎对 role 的兼容处理
+ * - 例如文心不支持 system，将其映射为 user
+ */
 export const formateMessage = (engine: EngineValue, messages: Message[]) => {
   if (engine === "wenxin") {
     return messages.map((item) => ({
@@ -145,6 +173,10 @@ export const formateMessage = (engine: EngineValue, messages: Message[]) => {
   }
   return messages;
 };
+/**
+ * 处理流式（SSE）增量数据
+ * - 传入 reader 与数据回调，将解析后的 event.data 持续回抛
+ */
 export async function handleStream(
   reader: ReadableStreamDefaultReader<Uint8Array>,
   onData: (data: string) => void
@@ -174,6 +206,9 @@ function compressRatio({ width, height }: { width: number; height: number }) {
     return { width, height };
   }
 }
+/**
+ * 将图片压缩为 webp，控制最大边界并输出 Blob
+ */
 export function compressImg(img: File) {
   return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
@@ -230,6 +265,9 @@ export const currentSelectionInfo: {
   word: "",
   context: "",
 };
+/**
+ * 请求后台进行当前标签页截图，并将 base64 数据通过消息发回内容脚本
+ */
 export const screenshot = async () => {
   const browser = (await import("webextension-polyfill")).default;
   const res = await browser.tabs.captureVisibleTab();
@@ -243,6 +281,9 @@ export const screenshot = async () => {
   };
   browser.tabs.sendMessage(tabs[0].id!, message);
 };
+/**
+ * 询问内容脚本获取当前窗口选区信息（文本、上下文）
+ */
 export const getWindowSelectionInfo = async () => {
   const browser = (await import("webextension-polyfill")).default;
   const tabs = await browser.tabs.query({
@@ -254,6 +295,9 @@ export const getWindowSelectionInfo = async () => {
   };
   return await browser.tabs.sendMessage(tabs[0].id!, message);
 };
+/**
+ * 解析柯林斯词典 HTML，提取音标、词义与例句
+ */
 export const parseCollins = (html: string) => {
   const result: CollinsWord = {
     phonetic: null,
@@ -278,6 +322,7 @@ export const parseCollins = (html: string) => {
   return result;
 };
 export const isInPopup = /extension/.test(location.protocol);
+/** Base64 图片转 Blob */
 export function base64ToBlob(base64: string): Promise<Blob> {
   return new Promise((resolve) => {
     const img = new Image();

@@ -1,3 +1,7 @@
+/**
+ * Google 翻译（免费接口）封装
+ * - 通过 background fetch 调用 `translate.googleapis.com`，解析二维数组结果为纯文本。
+ */
 import { sendBackgroundFetch } from "@/utils";
 
 type GoogleTranslateResult  = (string|unknown)[]

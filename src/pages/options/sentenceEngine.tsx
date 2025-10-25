@@ -1,3 +1,9 @@
+/**
+ * 页面：句子翻译引擎管理
+ * - 启用/禁用各引擎，支持拖拽排序；
+ * - 对于 Chat 类型引擎，提供系统/用户 Prompt 配置；
+ * - 结果写入 `setting.sentenceEngineList`。
+ */
 import { EngineItem } from "@/types";
 import { defaultSetting, allSentenceEngineList } from "@/utils/const";
 import { useTranslation } from "react-i18next";

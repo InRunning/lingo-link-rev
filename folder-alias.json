@@ -1,8 +1,350 @@
 {
     "src/background.ts": {
-        "description": "后台service worker"
+        "description": "后台service worker，处理扩展的后台任务和消息传递"
     },
     "src/pages/options/enginsSetting.tsx": {
-        "description": "设置填入"
+        "description": "设置填入，引擎设置页面"
+    },
+    "src/i18n.ts": {
+        "description": "国际化配置，处理多语言支持"
+    },
+    "src/store.ts": {
+        "description": "状态管理，使用Jotai进行全局状态管理"
+    },
+    "src/vite-env.d.ts": {
+        "description": "Vite环境类型声明文件"
+    },
+    "src/api/chat.ts": {
+        "description": "聊天API接口，处理对话相关请求"
+    },
+    "src/api/customAI.tsx": {
+        "description": "自定义AI接口，支持用户自定义AI服务"
+    },
+    "src/api/deeplx.ts": {
+        "description": "DeepLX翻译API接口"
+    },
+    "src/api/deepSeek.tsx": {
+        "description": "DeepSeek AI翻译接口"
+    },
+    "src/api/gemini.ts": {
+        "description": "Google Gemini翻译API接口"
+    },
+    "src/api/google.ts": {
+        "description": "Google翻译API接口"
+    },
+    "src/api/index.ts": {
+        "description": "API统一导出文件"
+    },
+    "src/api/moonShot.ts": {
+        "description": "月之暗面Moonshot AI翻译接口"
+    },
+    "src/api/openAI.tsx": {
+        "description": "OpenAI翻译API接口"
+    },
+    "src/api/oulu.ts": {
+        "description": "欧路词典API接口"
+    },
+    "src/api/wenxin.ts": {
+        "description": "百度文心一言翻译接口"
+    },
+    "src/api/youdaoTranslate.ts": {
+        "description": "有道翻译API接口"
+    },
+    "src/components/Avator.tsx": {
+        "description": "头像组件"
+    },
+    "src/components/CardDragableWrapper.tsx": {
+        "description": "可拖拽卡片包装器组件"
+    },
+    "src/components/CardFooter.tsx": {
+        "description": "卡片底部组件"
+    },
+    "src/components/ChatInput.tsx": {
+        "description": "聊天输入框组件"
+    },
+    "src/components/CollectForm.tsx": {
+        "description": "收藏表单组件"
+    },
+    "src/components/CollectModal.tsx": {
+        "description": "收藏模态框组件"
+    },
+    "src/components/ContentMore.tsx": {
+        "description": "内容更多选项组件"
+    },
+    "src/components/Conversation.tsx": {
+        "description": "对话组件"
+    },
+    "src/components/DefaultAvator.tsx": {
+        "description": "默认头像组件"
+    },
+    "src/components/DialogWrapper.tsx": {
+        "description": "对话框包装器组件"
+    },
+    "src/components/DropDown.tsx": {
+        "description": "下拉菜单组件"
+    },
+    "src/components/Editor.tsx": {
+        "description": "编辑器组件"
+    },
+    "src/components/EngineDropdown.tsx": {
+        "description": "引擎下拉选择组件"
+    },
+    "src/components/ExternalLink.tsx": {
+        "description": "外部链接组件"
+    },
+    "src/components/FallbackComponent.tsx": {
+        "description": "降级组件，处理错误情况"
+    },
+    "src/components/Highlight.tsx": {
+        "description": "高亮显示组件"
+    },
+    "src/components/ImgUploaderPreview.tsx": {
+        "description": "图片上传预览组件"
+    },
+    "src/components/InfoAndReset.tsx": {
+        "description": "信息显示和重置组件"
+    },
+    "src/components/InputBlink.tsx": {
+        "description": "输入框闪烁效果组件"
+    },
+    "src/components/Login.tsx": {
+        "description": "登录组件"
+    },
+    "src/components/PopupInput.tsx": {
+        "description": "弹窗输入组件"
+    },
+    "src/components/RenderRemark.tsx": {
+        "description": "渲染备注组件"
+    },
+    "src/components/SearchResult.tsx": {
+        "description": "搜索结果显示组件"
+    },
+    "src/components/SendIcon.tsx": {
+        "description": "发送图标组件"
+    },
+    "src/components/Speaker.tsx": {
+        "description": "语音播放组件"
+    },
+    "src/components/Toast.tsx": {
+        "description": "提示消息组件"
+    },
+    "src/components/Translate.tsx": {
+        "description": "翻译显示组件"
+    },
+    "src/components/TriggerIcon.tsx": {
+        "description": "触发图标组件"
+    },
+    "src/components/UpdateLog.tsx": {
+        "description": "更新日志组件"
+    },
+    "src/components/useChat.ts": {
+        "description": "聊天功能自定义Hook"
+    },
+    "src/components/useOldYoudao.tsx": {
+        "description": "旧版有道翻译Hook"
+    },
+    "src/components/useYoudao.tsx": {
+        "description": "有道翻译Hook"
+    },
+    "src/components/Word.tsx": {
+        "description": "单词显示组件"
+    },
+    "src/components/WordChat.tsx": {
+        "description": "单词聊天组件"
+    },
+    "src/contentScript/highlightStyle.tsx": {
+        "description": "高亮样式处理脚本"
+    },
+    "src/contentScript/index.tsx": {
+        "description": "内容脚本入口，处理页面划词翻译功能"
+    },
+    "src/contentScript/lingoCard.tsx": {
+        "description": "Lingo卡片组件，显示翻译结果"
+    },
+    "src/hooks/useContentScriptMessage.tsx": {
+        "description": "内容脚本消息处理Hook"
+    },
+    "src/hooks/useListenPostMessage.tsx": {
+        "description": "消息监听Hook"
+    },
+    "src/hooks/useTreeWalker.tsx": {
+        "description": "DOM树遍历Hook"
+    },
+    "src/lib/webcomponents-bundle.js": {
+        "description": "Web Components兼容库"
+    },
+    "src/lib/injectScripts/index.ts": {
+        "description": "注入脚本入口"
+    },
+    "src/lib/injectScripts/movie-web.css": {
+        "description": "视频网站样式注入"
+    },
+    "src/lib/injectScripts/movie-web.ts": {
+        "description": "视频网站功能注入"
+    },
+    "src/pages/options/dataManage.tsx": {
+        "description": "数据管理页面，生词收藏管理"
+    },
+    "src/pages/options/externalLiks.tsx": {
+        "description": "外部链接设置页面"
+    },
+    "src/pages/options/hotkeyInput.tsx": {
+        "description": "热键设置输入组件"
+    },
+    "src/pages/options/main.tsx": {
+        "description": "设置页面主入口"
+    },
+    "src/pages/options/movieWeb.tsx": {
+        "description": "视频网站设置页面"
+    },
+    "src/pages/options/options.tsx": {
+        "description": "扩展设置页面主组件"
+    },
+    "src/pages/options/other.tsx": {
+        "description": "其他设置页面"
+    },
+    "src/pages/options/question.tsx": {
+        "description": "问题反馈页面"
+    },
+    "src/pages/options/screenshotSetting.tsx": {
+        "description": "截图设置页面"
+    },
+    "src/pages/options/sentenceEngine.tsx": {
+        "description": "句子翻译引擎设置"
+    },
+    "src/pages/options/sidebar.tsx": {
+        "description": "侧边栏设置页面"
+    },
+    "src/pages/options/wordEngine.tsx": {
+        "description": "单词翻译引擎设置"
+    },
+    "src/pages/popup/footer.tsx": {
+        "description": "弹窗底部组件"
+    },
+    "src/pages/popup/main.tsx": {
+        "description": "弹窗主页面组件"
+    },
+    "src/storage/local.ts": {
+        "description": "本地存储管理"
+    },
+    "src/storage/session.ts": {
+        "description": "会话存储管理"
+    },
+    "src/storage/sync.ts": {
+        "description": "数据同步管理"
+    },
+    "src/types/chat.ts": {
+        "description": "聊天相关TypeScript类型定义"
+    },
+    "src/types/index.ts": {
+        "description": "类型定义统一导出"
+    },
+    "src/types/message.ts": {
+        "description": "消息相关TypeScript类型定义"
+    },
+    "src/types/words.ts": {
+        "description": "生词相关TypeScript类型定义"
+    },
+    "src/utils/const.ts": {
+        "description": "常量定义"
+    },
+    "src/utils/getSelection.ts": {
+        "description": "获取文本选择工具函数"
+    },
+    "src/utils/index.ts": {
+        "description": "工具函数统一导出"
+    },
+    "src/utils/mitt.ts": {
+        "description": "事件总线工具"
+    },
+    "src/utils/newYoudaoParser.ts": {
+        "description": "新版有道翻译结果解析器"
+    },
+    "src/utils/onCaptureScreenResult.ts": {
+        "description": "截图结果处理工具"
+    },
+    "src/utils/pageClicked.ts": {
+        "description": "页面点击事件处理"
+    },
+    "src/utils/prompt.ts": {
+        "description": "提示词模板工具"
+    },
+    "src/utils/translate.ts": {
+        "description": "翻译工具函数"
+    },
+    "src/utils/treeWalkerMark.ts": {
+        "description": "DOM树标记工具"
+    },
+    "src/utils/youdaoParser.ts": {
+        "description": "有道翻译结果解析器"
+    },
+    "manifest.config.ts": {
+        "description": "扩展配置文件，定义权限、页面和功能"
+    },
+    "package.json": {
+        "description": "项目依赖配置和构建脚本"
+    },
+    "vite.config.ts": {
+        "description": "Vite构建工具配置"
+    },
+    "tailwind.config.js": {
+        "description": "Tailwind CSS样式框架配置"
+    },
+    "tsconfig.json": {
+        "description": "TypeScript编译配置"
+    },
+    "buildExtension.sh": {
+        "description": "扩展构建脚本"
+    },
+    "background.html": {
+        "description": "Firefox背景页面HTML文件"
+    },
+    "src/pages/options/index.html": {
+        "description": "扩展设置页面HTML模板"
+    },
+    "src/pages/popup/index.html": {
+        "description": "弹窗页面HTML模板"
+    },
+    "src/assets/icon.png": {
+        "description": "扩展图标资源"
+    },
+    "src/assets/google.png": {
+        "description": "Google图标资源"
+    },
+    "src/assets/trigger.png": {
+        "description": "触发按钮图标资源"
+    },
+    "src/assets/styles/sperkerMotion.css": {
+        "description": "说话者动画样式"
+    },
+    "src/assets/styles/tailwind.css": {
+        "description": "Tailwind CSS基础样式"
+    },
+    "tsconfig.node.json": {
+        "description": "Node.js环境TypeScript配置"
+    },
+    "postcss.config.js": {
+        "description": "PostCSS处理器配置"
+    },
+    ".eslintrc.cjs": {
+        "description": "ESLint代码检查配置"
+    },
+    ".gitignore": {
+        "description": "Git版本控制忽略文件"
+    },
+    "LICENSE": {
+        "description": "项目许可证文件"
+    },
+    "README_EN.md": {
+        "description": "英文版项目说明文档"
+    },
+    "chrome.zip": {
+        "description": "Chrome扩展构建产物"
+    },
+    "edge.zip": {
+        "description": "Edge扩展构建产物"
+    },
+    "firefox.zip": {
+        "description": "Firefox扩展构建产物"
     }
 }

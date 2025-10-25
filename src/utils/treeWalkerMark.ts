@@ -1,3 +1,8 @@
+/**
+ * 在页面中批量标记（高亮）指定单词
+ * - 使用 TreeWalker 获取可见文本节点，插入自定义标签 translator-highlight；
+ * - 提供移除标记与增量处理，避免编辑区域/忽略标签。
+ */
 export const ignoreTags = [
   "CODE",
   "PICTURE",
