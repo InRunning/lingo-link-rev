@@ -1,6 +1,6 @@
 # 调用流程：ContentScriptApp
 
-## 1. 在 [src/contentScript/lingoCard.tsx#38](src/contentScript/lingoCard.tsx#L38) 调用 `ContentScriptApp` [src/contentScript/lingoCard.tsx#38](src/contentScript/lingoCard.tsx#L38)
+## 1. 在 [src/contentScript/lingoCard.tsx#38](../../src/contentScript/lingoCard.tsx#L38) 调用 `ContentScriptApp` [src/contentScript/lingoCard.tsx#38](src/contentScript/lingoCard.tsx#L38)
    1.1 在 [src/contentScript/lingoCard.tsx#39](src/contentScript/lingoCard.tsx#L39) 调用 `useContentScriptMessage` [src/hooks/useContentScriptMessage.tsx](src/hooks/useContentScriptMessage.tsx)
    1.2 在 [src/contentScript/lingoCard.tsx#42](src/contentScript/lingoCard.tsx#L42) 调用 `useAtom` [src/store.ts](src/store.ts)
    1.3 在 [src/contentScript/lingoCard.tsx#43](src/contentScript/lingoCard.tsx#L43) 调用 `useTranslation` [src/i18n.ts](src/i18n.ts)
