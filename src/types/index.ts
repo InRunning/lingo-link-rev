@@ -1,6 +1,18 @@
+/**
+ * 类型定义模块 (Type Definitions)
+ *
+ * 功能说明：
+ * - 定义扩展中使用的所有接口和类型
+ * - 包含消息传递、用户设置、数据结构等类型定义
+ * - 为整个项目提供类型安全保障
+ */
+
+// 导入常量定义和类型
 import { HighlightName, LangCode, defaultSetting } from "@/utils/const";
+// 导入单词相关的类型定义
 import type { CommunityItemType, Sww } from "./words";
 
+// 注释掉的旧版本消息类型定义
 // export interface ExtensionMessage {
 //   type: "fetch" | "auth" | "openOptions" | "captureScreen";
 // }

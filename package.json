@@ -1,63 +1,75 @@
+/**
+ * Lingo Link 浏览器扩展项目配置
+ * 这是一个多平台浏览器扩展项目，支持Chrome、Edge和Firefox
+ * 主要功能是在网页上选择文本进行翻译和语言学习
+ */
 {
+  // 项目名称
   "name": "lingo-link",
+  // 私有项目标记
   "private": true,
+  // 当前版本号
   "version": "0.7.0",
+  // 使用ES6模块系统
   "type": "module",
+  // 构建和开发脚本
   "scripts": {
-    "dev:edge": "cross-env  BUILD_TARGET=edge vite",
-    "dev:chrome": "cross-env  BUILD_TARGET=chrome vite",
-    "build:chrome": "tsc && cross-env  BUILD_TARGET=chrome vite build",
-    "build:edge": "tsc && cross-env BUILD_TARGET=edge vite build",
-    "build:firefox": "tsc && cross-env  BUILD_TARGET=firefox vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "dev:edge": "cross-env  BUILD_TARGET=edge vite",                    // 开发模式 - Edge浏览器
+    "dev:chrome": "cross-env  BUILD_TARGET=chrome vite",               // 开发模式 - Chrome浏览器
+    "build:chrome": "tsc && cross-env  BUILD_TARGET=chrome vite build", // 构建 - Chrome浏览器版本
+    "build:edge": "tsc && cross-env BUILD_TARGET=edge vite build",      // 构建 - Edge浏览器版本
+    "build:firefox": "tsc && cross-env  BUILD_TARGET=firefox vite build", // 构建 - Firefox浏览器版本
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0", // 代码检查
+    "preview": "vite preview"                                           // 预览构建结果
   },
+  // 生产环境依赖包
   "dependencies": {
-    "@dnd-kit/core": "^6.1.0",
-    "@dnd-kit/sortable": "^8.0.0",
-    "@dnd-kit/utilities": "^3.2.2",
-    "@thedutchcoder/postcss-rem-to-px": "^0.0.2",
-    "common-tags": "^1.8.2",
-    "daisyui": "^4.12.2",
-    "eventsource-parser": "^1.1.2",
-    "hotkeys-js": "^3.13.7",
-    "i18next": "^23.11.5",
-    "i18next-browser-languagedetector": "^8.0.0",
-    "immer": "^10.1.1",
-    "jotai": "^2.8.3",
-    "jotai-immer": "^0.4.1",
-    "lodash.debounce": "^4.0.8",
-    "lucide-react": "^0.394.0",
-    "mitt": "^3.0.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-draggable": "^4.4.6",
-    "react-error-boundary": "^4.0.13",
-    "react-i18next": "^14.1.2",
-    "uuid": "^10.0.0",
-    "webextension-polyfill": "^0.12.0"
+    "@dnd-kit/core": "^6.1.0",                    // 拖拽功能核心库
+    "@dnd-kit/sortable": "^8.0.0",                // 可排序拖拽组件
+    "@dnd-kit/utilities": "^3.2.2",               // 拖拽功能工具库
+    "@thedutchcoder/postcss-rem-to-px": "^0.0.2", // PostCSS rem转px插件
+    "common-tags": "^1.8.2",                      // 通用字符串处理标签
+    "daisyui": "^4.12.2",                         // Tailwind CSS组件库
+    "eventsource-parser": "^1.1.2",               // EventSource解析器（用于SSE）
+    "hotkeys-js": "^3.13.7",                      // 快捷键处理库
+    "i18next": "^23.11.5",                        // 国际化核心库
+    "i18next-browser-languagedetector": "^8.0.0", // 浏览器语言检测器
+    "immer": "^10.1.1",                           // 不可变状态管理库
+    "jotai": "^2.8.3",                            // 轻量级状态管理库
+    "jotai-immer": "^0.4.1",                      // Jotai与Immer集成
+    "lodash.debounce": "^4.0.8",                  // 防抖函数库
+    "lucide-react": "^0.394.0",                   // 图标库
+    "mitt": "^3.0.1",                             // 事件总线库
+    "react": "^18.2.0",                           // React核心库
+    "react-dom": "^18.2.0",                       // React DOM渲染库
+    "react-draggable": "^4.4.6",                  // React拖拽组件
+    "react-error-boundary": "^4.0.13",            // React错误边界组件
+    "react-i18next": "^14.1.2",                   // React国际化集成
+    "uuid": "^10.0.0",                            // UUID生成器
+    "webextension-polyfill": "^0.12.0"            // 浏览器扩展API polyfill
   },
+  // 开发环境依赖包
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.0.0-beta.26",
-    "@types/chrome": "^0.0.268",
-    "@types/common-tags": "^1.8.4",
-    "@types/lodash.debounce": "^4.0.9",
-    "@types/node": "^20.14.2",
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
-    "@types/uuid": "^9.0.8",
-    "@types/webextension-polyfill": "^0.10.7",
-    "@typescript-eslint/eslint-plugin": "^7.2.0",
-    "@typescript-eslint/parser": "^7.2.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.19",
-    "cross-env": "^7.0.3",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.6",
-    "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.4",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0"
+    "@crxjs/vite-plugin": "^2.0.0-beta.26",       // Chrome扩展Vite插件
+    "@types/chrome": "^0.0.268",                   // Chrome API TypeScript类型定义
+    "@types/common-tags": "^1.8.4",                // common-tags类型定义
+    "@types/lodash.debounce": "^4.0.9",            // lodash.debounce类型定义
+    "@types/node": "^20.14.2",                     // Node.js类型定义
+    "@types/react": "^18.2.66",                    // React类型定义
+    "@types/react-dom": "^18.2.22",                // React DOM类型定义
+    "@types/uuid": "^9.0.8",                       // UUID类型定义
+    "@types/webextension-polyfill": "^0.10.7",     // webextension-polyfill类型定义
+    "@typescript-eslint/eslint-plugin": "^7.2.0",  // TypeScript ESLint插件
+    "@typescript-eslint/parser": "^7.2.0",         // TypeScript ESLint解析器
+    "@vitejs/plugin-react": "^4.2.1",              // Vite React插件
+    "autoprefixer": "^10.4.19",                    // CSS前缀自动添加
+    "cross-env": "^7.0.3",                         // 跨环境环境变量设置
+    "eslint": "^8.57.0",                           // 代码检查工具
+    "eslint-plugin-react-hooks": "^4.6.0",         // React Hooks ESLint规则
+    "eslint-plugin-react-refresh": "^0.4.6",       // React刷新ESLint规则
+    "postcss": "^8.4.38",                          // CSS后处理器
+    "tailwindcss": "^3.4.4",                       // CSS框架
+    "typescript": "^5.2.2",                        // TypeScript编译器
+    "vite": "^5.2.0"                               // 构建工具
   }
 }

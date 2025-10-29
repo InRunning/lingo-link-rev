@@ -1,5 +1,8 @@
 {
     "src/components/TriggerIcon.tsx": {
         "description": "点击弹出的icon"
+    },
+    "src/store.ts": {
+        "description": "状态管理"
     }
 }

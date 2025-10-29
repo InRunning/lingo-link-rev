@@ -1,5 +1,18 @@
+/**
+ * 国际化模块 (Internationalization)
+ *
+ * 功能说明：
+ * - 配置多语言支持（中文和英文）
+ * - 管理界面文本的翻译资源
+ * - 支持语言检测和语言切换
+ * - 提供翻译占位符和变量替换功能
+ */
+
+// 导入 i18next 核心库
 import i18n from "i18next";
+// 导入 React 集成插件
 import { initReactI18next } from "react-i18next";
+// 导入浏览器语言检测器
 import LanguageDetector from "i18next-browser-languagedetector";
 
 const resources = {

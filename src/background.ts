@@ -1,7 +1,22 @@
+/**
+ * 后台脚本模块 (Background Script)
+ *
+ * 功能说明：
+ * - 处理扩展的后台任务和事件监听
+ * - 管理右键菜单和上下文菜单
+ * - 处理扩展与其他部分之间的消息传递
+ * - 提供身份验证和网络请求代理功能
+ */
+
+// 导入浏览器扩展API的TypeScript类型定义
 import Browser from "webextension-polyfill";
+// 导入消息传递的类型定义
 import type { ExtensionMessage, BackgroundFetchParam, ExternalMessage } from "./types";
+// 导入设置存储操作函数
 import { getSetting } from "./storage/sync";
-//const  screenshot = async () => {
+
+// 注释掉的截图功能代码（可能用于未来功能扩展）
+// const  screenshot = async () => {
 //   const res = await Browser.tabs.captureVisibleTab();
 //   const tabs = await Browser.tabs.query({
 //     active: true,

@@ -1,6 +1,19 @@
+/**
+ * 搜索结果内容组件 (Search Result Content Component)
+ *
+ * 功能说明：
+ * - 主翻译界面组件，负责显示单词/句子查询结果
+ * - 集成收藏、备注、引擎切换等完整功能
+ * - 支持自动保存、社区备注等高级功能
+ * - 处理popup和contentScript两种显示环境
+ */
+
+// 导入工具函数
 import { getCollectWord, isSameWord } from "../utils";
 import { useState, useEffect, useRef } from "react";
+// 导入类型定义
 import type { CommunityItemType, CommunityType, Sww } from "@/types/words";
+// 导入子组件
 import Translate from "./Translate";
 import Word from "./Word";
 import { currentSelectionInfo } from "../utils";
@@ -13,6 +26,7 @@ import FallbackComponent from "./FallbackComponent";
 import { isInPopup } from "@/utils";
 import Login from "./Login";
 import { showLogin } from "./Login";
+// 导入状态管理
 import { useAtom } from "jotai";
 import {
   addSwwAtom,
@@ -25,13 +39,16 @@ import {
   collectInputRemarkAtom,
   remarkListAtom,
 } from "@/store";
+// 导入浏览器扩展API和工具
 import Browser from "webextension-polyfill";
 import { setSession } from "@/storage/session";
 import { createPortal } from "react-dom";
+// 导入收藏相关组件
 import CollectModal from "./CollectModal";
 import CollectForm from "./CollectForm";
 import { v4 as uuidv4 } from "uuid";
 import { hasWord } from "../utils";
+// 导入本地存储操作
 import {
   getLocal,
   addRemark,
@@ -39,6 +56,7 @@ import {
   updateRemark,
 } from "@/storage/local";
 import { toastManager } from "./Toast";
+// 导入API操作
 import {
   addCommunity,
   deleteCommunity,
@@ -53,7 +71,7 @@ export default function TranslateContent({
 }: {
   searchText: string;
 }) {
-  // 全局生词列表（用于判断是否已收藏/掌握）
+  // 全局生词列表（用于判断是否已收藏/掌握）可能是 Study word with的缩写
   const [swwList] = useAtom(swwListAtom);
   // 原子写操作：添加/移除/更新 生词项
   const [, addSww] = useAtom(addSwwAtom);
@@ -140,9 +158,9 @@ export default function TranslateContent({
       result
         ? { word: result.word, context: result.context! }
         : {
-            word: currentSelectionInfo.word,
-            context: currentSelectionInfo.context,
-          }
+          word: currentSelectionInfo.word,
+          context: currentSelectionInfo.context,
+        }
     );
   }, [searchText, swwList, setCollectBasicInfo]);
   useEffect(() => {
@@ -152,27 +170,27 @@ export default function TranslateContent({
         (item) => item.word === searchText
       )[0];
       setWordRemarkInfo(recentRemark ?? {});
-      setCollectInputRemark(recentRemark ?? {});      
+      setCollectInputRemark(recentRemark ?? {});
     } else {
       setWordRemarkInfo({});
       setCollectInputRemark({} as CollectRemarkInfo);
     }
   }, [searchText, setCollectInputRemark, remarkList]);
-  useEffect(()=>{
+  useEffect(() => {
     // 自动收藏逻辑：满足条件时加入本地与远端收藏
     let ignore = false;
     Promise.all([getSetting(), getLocal()]).then(res => {
-      if (ignore) {return}
+      if (ignore) { return }
       const setting = res[0];
       const swwList = res[1].swwList;
       const isWordResult = isWord({
         input: searchText,
         lang: setting.sourceLanguage?.language,
       });
-      if (!isWordResult) {return}
-      if (!setting.autoSaveWord) {return}
-      if (!setting.userInfo) {return}
-      if (!swwList?.find(item => isSameWord(item.word, searchText))) {        
+      if (!isWordResult) { return }
+      if (!setting.autoSaveWord) { return }
+      if (!setting.userInfo) { return }
+      if (!swwList?.find(item => isSameWord(item.word, searchText))) {
         const item = {
           id: uuidv4(),
           lastEditDate: Date.now(),
@@ -182,7 +200,7 @@ export default function TranslateContent({
         addSww(item)
       }
     })
-     
+
     return () => {
       // 防止竞态：依赖变化/卸载后忽略异步落回
       ignore = true
@@ -275,7 +293,7 @@ export default function TranslateContent({
       });
       removeRemark({ id: wordRemarkInfo.id });
     }
-    
+
     // 备注存在 -> 更新内容与图片（本地与远端）
     if (
       wordRemarkInfo.id &&
@@ -345,11 +363,10 @@ export default function TranslateContent({
         isWord={isWordResult}
         currentEngine={currentEngine}
         onChange={(engine) => setCurrentEngine(engine)}
-        className={`absolute ${
-          isInPopup
+        className={`absolute ${isInPopup
             ? "right-0 bg-gray-300/60 rounded-xl text-[11px] p-[3px] top-[0px]"
             : "right-16 text-[13px]"
-        } top-[5px] z-10`}
+          } top-[5px] z-10`}
       />
 
       <ErrorBoundary
@@ -390,27 +407,27 @@ export default function TranslateContent({
       <Login />
       {!isInPopup && contentScriptWrapper && collectShow
         ? createPortal(
-            <CollectModal>
-              <CollectForm
-                onSubmit={handleCollectSubmit}
-                onCancel={() => setCollectShow(false)}
-              ></CollectForm>
-            </CollectModal>,
-            contentScriptWrapper
-          )
+          <CollectModal>
+            <CollectForm
+              onSubmit={handleCollectSubmit}
+              onCancel={() => setCollectShow(false)}
+            ></CollectForm>
+          </CollectModal>,
+          contentScriptWrapper
+        )
         : null}
       {isInPopup && collectShow
         ? createPortal(
-            <div className="p-3">
-              <CollectForm
-                size="sm"
-                showCloseIcon={true}
-                onSubmit={handleCollectSubmit}
-                onCancel={() => setCollectShow(false)}
-              ></CollectForm>
-            </div>,
-            document.querySelector("#collect-wrapper")!
-          )
+          <div className="p-3">
+            <CollectForm
+              size="sm"
+              showCloseIcon={true}
+              onSubmit={handleCollectSubmit}
+              onCancel={() => setCollectShow(false)}
+            ></CollectForm>
+          </div>,
+          document.querySelector("#collect-wrapper")!
+        )
         : null}
     </div>
   );
