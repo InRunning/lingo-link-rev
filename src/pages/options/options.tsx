@@ -18,17 +18,36 @@ import type { Storage } from "webextension-polyfill";
 import { useAtom } from "jotai";
 import { settingAtom } from "@/store";
 import HotkeysInput from "./hotkeyInput";
+
+// 默认触发器图标URL
 const defaultTriggerUrl = new URL(triggerIcon, import.meta.url).href;
+
+/**
+ * 选项页面组件
+ * 提供用户设置界面，包括账户、翻译、高亮、界面语言等配置选项
+ */
 export default function Options() {
+  // 国际化翻译钩子
   const { t, i18n } = useTranslation();
+  // 使用Jotai状态管理获取设置
   const [setting, setSetting] = useAtom(settingAtom);
+
+  /**
+   * 处理源语言变更
+   * @param e 选择框变更事件
+   */
   const handleSourceLanguageChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const item = AllLanguage.find((sub) => sub.language === e.target.value);
     setSetting({ sourceLanguage: item });
   };
+  /**
+   * 检查并处理登录状态
+   * 监听会话存储变化，如果需要登录则显示登录弹窗
+   */
   useEffect(() => {
+    // 检查当前会话是否需要登录
     getSession().then((res) => {
       if (res.showLogin) {
         setTimeout(() => {
@@ -37,6 +56,8 @@ export default function Options() {
         setSession({ showLogin: false });
       }
     });
+    
+    // 监听会话存储变化
     const handleSessionChange = (
       changes: Storage.StorageAreaOnChangedChangesType
     ) => {
@@ -49,10 +70,14 @@ export default function Options() {
     };
     browser.storage.session.onChanged.addListener(handleSessionChange);
 
+    // 清理函数：移除事件监听器
     return () => {
       browser.storage.session.onChanged.removeListener(handleSessionChange);
     };
   }, []);
+  /**
+   * 监听界面语言设置变化并更新国际化语言
+   */
   useEffect(() => {
     if (setting.interfaceLanguage !== i18n.language) {
       i18n.changeLanguage(
@@ -61,18 +86,32 @@ export default function Options() {
     }
   }, [i18n, setting.interfaceLanguage]);
 
+  /**
+   * 切换登录状态
+   * 如果未登录则显示登录弹窗，如果已登录则退出登录
+   */
   const toogleLogIn = () => {
     if (!setting.userInfo?.email) {
       showLogin();
     } else {
+      // 退出登录：清除用户信息和生词列表
       setSetting({userInfo: null});
       setLocal({ swwList: [] });
     }
   };
 
+  /**
+   * 更改界面语言
+   * @param lang 目标语言代码
+   */
   const changeI18nLang = (lang: string) => {
     i18n.changeLanguage(lang);
   };
+  /**
+   * 处理文件上传事件
+   * 上传用户自定义的触发器图标
+   * @param event 文件选择事件
+   */
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -88,14 +127,13 @@ export default function Options() {
   return (
     <div>
       <div className="grid grid-cols-1 gap-9">
+        {/* 账户设置区域 */}
         <div>
-          {<div className="font-semibold text-[17px] mb-2">{t("Account")}</div>}
+          <div className="font-semibold text-[17px] mb-2">{t("Account")}</div>
           <div>
-            {
-              <span className="mr-2">
-                {setting.userInfo?.email || t("Not Logged In State")}
-              </span>
-            }
+            <span className="mr-2">
+              {setting.userInfo?.email || t("Not Logged In State")}
+            </span>
             <button
               onClick={toogleLogIn}
               className={`btn btn-sm ${
@@ -106,6 +144,7 @@ export default function Options() {
             </button>
           </div>
         </div>
+        {/* 显示触发器图标设置 */}
         <label>
           <div className="font-semibold text-[17px] mb-2">
             {t("Display Trigger Icon After Highlighting Text")}
@@ -125,6 +164,7 @@ export default function Options() {
             />
           </div>
         </label>
+        {/* 快捷键翻译设置 */}
         <div>
           <div className="font-semibold text-[17px] mb-2">
             {t("Translate after selecting text and pressing a shortcut key")}
@@ -133,6 +173,7 @@ export default function Options() {
             <HotkeysInput />
           </div>
         </div>
+        {/* 自动保存单词设置 */}
         <label>
           <div className="font-semibold text-[17px] mb-2">
             {t("Auto Save Word When Searching")}
@@ -141,6 +182,7 @@ export default function Options() {
             <input
                 type="checkbox"
                 onChange={(e) => {
+                  // 如果开启自动保存但未登录，则显示登录弹窗
                   if (e.target.checked && !setting.userInfo) {
                     showLogin()
                   } else {
@@ -156,6 +198,7 @@ export default function Options() {
             />
           </div>
         </label>
+        {/* 触发器图标设置 */}
         <div>
           <div className="font-semibold text-[17px] mb-2">
             {t("Trigger Icon")}
@@ -180,6 +223,7 @@ export default function Options() {
             </label>
           </div>
         </div>
+        {/* 触发器图标大小设置 */}
         <label>
           <div className="font-semibold text-[17px] mb-2">
             {t("Trigger Icon Size")}
@@ -197,6 +241,7 @@ export default function Options() {
             />
           </div>
         </label>
+        {/* 高亮颜色设置 */}
         <div>
           <div className="font-semibold text-[17px] mb-2">
             {t("Highlight Color")}
@@ -214,6 +259,7 @@ export default function Options() {
             />
           </div>
         </div>
+        {/* 高亮样式设置 */}
         <label>
           <div className="font-semibold text-[17px] mb-2">
             {t("Highlight Style")}
@@ -234,6 +280,7 @@ export default function Options() {
             ))}
           </select>
         </label>
+        {/* 自动发音设置 */}
         <label>
           <div className="font-semibold text-[17px] mb-2">
             {t("Automatically pronounce the word when looking it up")}
@@ -251,6 +298,7 @@ export default function Options() {
             />
           </div>
         </label>
+        {/* 界面语言设置 */}
         <label>
           <div className="font-semibold text-[17px] mb-2">
             {t("Interface Language")}
@@ -271,6 +319,7 @@ export default function Options() {
             <option value={"en"}>English</option>
           </select>
         </label>
+        {/* 翻译源语言设置 */}
         <div>
           <div className="font-semibold text-[17px] mb-2">
             {t("Language to be Translated")}
@@ -292,6 +341,7 @@ export default function Options() {
             </select>
           </div>
         </div>
+        {/* 目标语言（母语）设置 */}
         <label>
           <div className="font-semibold text-[17px] mb-2">
             {t("Native Language")}
@@ -313,6 +363,7 @@ export default function Options() {
           </select>
         </label>
       </div>
+      {/* 登录组件 */}
       <Login/>
     </div>
   );

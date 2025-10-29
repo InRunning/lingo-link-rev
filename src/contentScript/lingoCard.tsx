@@ -1,3 +1,16 @@
+/**
+ * Lingo Link 扩展的核心内容脚本组件
+ * 负责在网页上实现翻译卡片功能，包括：
+ * - 文本选择检测与触发
+ * - 卡片展示与定位
+ * - 多种触发方式（悬停、点击、快捷键）
+ * - 上下文感知翻译
+ * - 拖拽支持
+ * - 事件处理与通信
+ * - 国际化支持
+ * - 错误处理
+ */
+
 import browser from "webextension-polyfill";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isSelectionInEditElement, isWord, preventBeyondWindow } from "@/utils";
@@ -19,41 +32,28 @@ import CardDragableWrapper from "@/components/CardDragableWrapper";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackComponent from "@/components/FallbackComponent";
 import { emitter } from "@/utils/mitt";
-// import { useConversationContext } from "@/context/conversation";
-// import Conversation from "./Conversation";
-// import { ConversationProvider } from "@/context/conversation";
 import { ExtensionMessage } from "@/types";
 import onCaptureScreenResult from "@/utils/onCaptureScreenResult";
 import { useAtom } from "jotai";
 import useTreeWalker from "@/hooks/useTreeWalker";
 import useContentScriptMessage from "@/hooks/useContentScriptMessage";
 import hotkeys from "hotkeys-js";
-// export default function ConversationProviderWrapper() {
-//   return (
-//     <ConversationProvider>
-//       <ContentScriptApp />
-//     </ConversationProvider>
-//   );
-// }
 export default function ContentScriptApp() {
   useContentScriptMessage();
   const mouseoverCollectTimer = useRef<number | null>(null);
   const hideCardTimer = useRef<number | null>(null);
   const [setting] = useAtom(settingAtom);
   const { i18n } = useTranslation();
-  // const {
-  //   conversationShow,
-  //   conversationEngine,
-  //   messageList,
-  //   setConversationShow,
-  // } = useConversationContext();
 
   const [triggerIconShow, setTriggerIconShow] = useState(false);
   const [triggerIconPosition, setTriggerIconPosition] = useState({
     x: 0,
     y: 0,
   });
-  const [cardPosition, setCardPosition] = useState({ x: 0, y: 0 });
+  const [cardPosition, setCardPosition] = useState({
+    x: 0,
+    y: 0,
+  });
   const [cardShow, setCardShow] = useState(false);
   const rangeRef = useRef<Range | undefined>(undefined);
   const [searchText, setSearchText] = useState("");
@@ -65,7 +65,10 @@ export default function ContentScriptApp() {
     }: {
       text: string;
       domRect?: DOMRect;
-      position?: { x: number; y: number };
+      position?: {
+        x: number;
+        y: number;
+      };
     }) => {
       setCardShow(true);
       setSearchText(text);
@@ -96,7 +99,10 @@ export default function ContentScriptApp() {
         x = position.x;
         y = position.y;
       }
-      setCardPosition({ x, y });
+      setCardPosition({
+        x,
+        y,
+      });
     },
     [setting.sourceLanguage?.language]
   );
@@ -115,7 +121,7 @@ export default function ContentScriptApp() {
     [showCardAndPosition]
   );
   const mouseoutCollectCallback = useCallback(() => {
-    if (mouseoverCollectTimer.current && ! cardShow) {
+    if (mouseoverCollectTimer.current && !cardShow) {
       clearTimeout(mouseoverCollectTimer.current);
     }
   }, [cardShow]);
@@ -127,7 +133,7 @@ export default function ContentScriptApp() {
     mouseoutCallback: mouseoutCollectCallback,
   });
   useEffect(() => {
-    const translate = () => {      
+    const translate = () => {
       showCardAndPosition({
         text: currentSelectionInfo.word,
         domRect: rangeRef.current!.getBoundingClientRect(),
@@ -153,7 +159,10 @@ export default function ContentScriptApp() {
         (setting.showSelectionIcon ?? defaultSetting.showSelectionIcon)
       ) {
         setTriggerIconShow(true);
-        setTriggerIconPosition({ x: event.pageX, y: event.pageY + 10 });
+        setTriggerIconPosition({
+          x: event.pageX,
+          y: event.pageY + 10,
+        });
       }
     };
     const handleMouseDown = function (event: MouseEvent) {
@@ -235,11 +244,13 @@ export default function ContentScriptApp() {
         });
       }
       if (message.type === "onScreenDataurl") {
-        onCaptureScreenResult(message.payload, (result, domRect) =>
-          showCardAndPosition({
-            text: result,
-            domRect,
-          })
+        onCaptureScreenResult(
+          message.payload,
+          (result, domRect) =>
+            showCardAndPosition({
+              text: result,
+              domRect,
+            })
         );
       }
       if (message.type === "getCurWindowSelectionInfo") {
@@ -282,14 +293,6 @@ export default function ContentScriptApp() {
           <FallbackComponent fallbackProps={fallbackProps} />
         )}
       >
-        {/* {conversationEngine && conversationShow ? (
-          <Conversation
-            className="fixed p-2 bg-base-100 h-[60vh] max-h-[100vh] bottom-[20px] rounded-md shadow-[0_0_16px_rgba(0,0,0,0.2)]"
-            onClose={() => setConversationShow(false)}
-            preMessageList={messageList}
-            engine={conversationEngine}
-          />
-        ) : null} */}
         {cardShow && (
           <CardDragableWrapper
             x={cardPosition.x}
@@ -304,4 +307,4 @@ export default function ContentScriptApp() {
       <ToastContainer />
     </div>
   );
-}
+} // ContentScriptApp 定义结束
