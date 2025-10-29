@@ -1,1 +1,5 @@
-{}
+{
+    "src/components/TriggerIcon.tsx": {
+        "description": "点击弹出的icon"
+    }
+}
