@@ -247,3 +247,7 @@ function isInlineNode(node?: Node | null): node is Node {
   }
   return false
 }
+/**
+ * 选区工具：从页面选中内容提取单词/句子与上下文
+ * - 负责边界清洗、空白折叠、段落拼接
+ */

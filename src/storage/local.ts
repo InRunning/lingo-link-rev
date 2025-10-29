@@ -60,3 +60,8 @@ export const removeRemark = async({ id }: { id: string; }) => {
 
   setLocal({remarkList: (remarkList.filter((item) => item.id !== id))});
 };
+/**
+ * 本地存储（browser.storage.local）
+ * - 存放体积较大的词库/收藏等数据
+ * - 不跨设备同步
+ */

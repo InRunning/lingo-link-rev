@@ -109,3 +109,7 @@ function parseWordBasicHTML(html:string) {
     pattern,
   }
 }
+/**
+ * 有道词典解析（旧版兼容）：保留对旧格式的支持
+ * - 与新版解析保持输出结构一致，便于上层复用
+ */

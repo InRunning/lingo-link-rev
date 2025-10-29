@@ -16,3 +16,7 @@ export interface  Chat {
   refresh: ()=>void
   resume?: (params: OpenAIRecordItem) => void
 }
+/**
+ * 聊天消息类型：role/content/时间戳等
+ * - 兼容多家大模型消息结构
+ */

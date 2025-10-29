@@ -34,3 +34,8 @@ export default async function  googleTranslate({text,targetLang}:{text: string, 
     }
   }
 }
+/**
+ * Google 翻译 API 访问封装
+ * - 参数：源/目标语言、文本
+ * - 返回：标准化翻译结果结构
+ */

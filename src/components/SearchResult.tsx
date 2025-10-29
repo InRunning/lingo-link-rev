@@ -53,11 +53,15 @@ export default function TranslateContent({
 }: {
   searchText: string;
 }) {
+  // 全局生词列表（用于判断是否已收藏/掌握）
   const [swwList] = useAtom(swwListAtom);
+  // 原子写操作：添加/移除/更新 生词项
   const [, addSww] = useAtom(addSwwAtom);
   const [, removeSww] = useAtom(removeSwwAtom);
   const [, updateSww] = useAtom(updateSwwItemAtom);
+  // 全局设置（语言、引擎、自动保存等）
   const [setting] = useAtom(settingAtom);
+  // 社区备注列表（ Immer 原子用于便捷更新）
   const [remarkList, setRemarkList] = useImmerAtom(remarkListAtom);
   const [collectInputBasic, setCollectBasicInfo] = useAtom(
     collectInputBasicAtom
@@ -65,16 +69,21 @@ export default function TranslateContent({
   const [collectInputRemark, setCollectInputRemark] = useAtom(
     collectInputRemarkAtom
   );
+  // 当前选择的引擎（单词/句子模式下各有独立列表）
   const [currentEngine, setCurrentEngine] = useState<EngineValue | null>(null);
+  // 当前单词的收藏信息（若存在则含 id/权重/熟练度等）
   const [wordCollectInfo, setCurrentCollect] = useState<Sww | undefined>(
     undefined
   );
+  // 当前单词的社区备注信息（可为空）
   const [wordRemarkInfo, setWordRemarkInfo] = useState<
     Partial<CommunityItemType>
   >({});
+  // 是否显示收藏弹窗；内容脚本环境下需要 portal 到宿主容器
   const [collectShow, setCollectShow] = useAtom(collectShowAtom);
   const [contentScriptWrapper, setContentScriptWrapper] =
     useState<HTMLDivElement | null>(null);
+  // 强制刷新 key：用于重挂载组件，避免内部状态残留
   const [translateV, setTranslateV] = useState(0);
   const [wordV, setWordV] = useState(0);
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -84,6 +93,7 @@ export default function TranslateContent({
     if (isInPopup) {
       setCollectShow(true);
     } else {
+      // 在内容脚本中，通过 shadowRoot 查找容器并使用 createPortal
       const root = divRef.current?.getRootNode() as HTMLElement;
       setCollectShow(true);
       setContentScriptWrapper(
@@ -92,6 +102,7 @@ export default function TranslateContent({
     }
   };
   useEffect(() => {
+    // 根据输入判断单词/句子模式，并从对应引擎列表中选第一个“勾选”的引擎
     const isWordResult = isWord({
       input: searchText,
       lang: setting.sourceLanguage?.language,
@@ -118,9 +129,11 @@ export default function TranslateContent({
     setting.sourceLanguage?.language,
   ]);
   useEffect(() => {
+    // 切换引擎时清除错误态
     fallbackComRef.current?.hideError();
   }, [currentEngine]);
   useEffect(() => {
+    // 计算收藏信息，并预填收藏表单的基础信息
     const result = getCollectWord({ word: searchText, swwList });
     setCurrentCollect(result);
     setCollectBasicInfo(
@@ -133,6 +146,7 @@ export default function TranslateContent({
     );
   }, [searchText, swwList, setCollectBasicInfo]);
   useEffect(() => {
+    // 绑定最近的一条社区备注（如无则清空）
     if (searchText) {
       const recentRemark = remarkList.filter(
         (item) => item.word === searchText
@@ -145,6 +159,7 @@ export default function TranslateContent({
     }
   }, [searchText, setCollectInputRemark, remarkList]);
   useEffect(()=>{
+    // 自动收藏逻辑：满足条件时加入本地与远端收藏
     let ignore = false;
     Promise.all([getSetting(), getLocal()]).then(res => {
       if (ignore) {return}
@@ -169,6 +184,7 @@ export default function TranslateContent({
     })
      
     return () => {
+      // 防止竞态：依赖变化/卸载后忽略异步落回
       ignore = true
     }
   }, [searchText, addSww])
@@ -189,6 +205,7 @@ export default function TranslateContent({
     }
   };
   const handleMasterClick = () => {
+    // 切换“已掌握”标记（1 表示已掌握）
     const newLevel = wordCollectInfo?.masteryLevel === 1 ? 0 : 1;
     updateSww({ ...wordCollectInfo!, ...{ masteryLevel: newLevel } });
   };
@@ -196,6 +213,7 @@ export default function TranslateContent({
     if (!wordCollectInfo) {
       return;
     }
+    // 更新生词权重：用于排序/优先级控制
     updateSww({ ...wordCollectInfo, ...{ weight: num } });
   };
   const handlePencilClick = () => {
@@ -203,8 +221,10 @@ export default function TranslateContent({
   };
   const onRefresh = (type: "translate" | "word") => {
     if (type === "translate") {
+      // 重新渲染 Translate 区域
       setTranslateV((pre) => ++pre);
     } else {
+      // 重新渲染 Word 区域
       setWordV((pre) => ++pre);
     }
   };
@@ -240,6 +260,7 @@ export default function TranslateContent({
     }
     // remark section
 
+    // 备注为空 -> 删除社区备注（本地与远端）
     if (
       wordRemarkInfo.id &&
       !collectInputRemark.content &&
@@ -255,6 +276,7 @@ export default function TranslateContent({
       removeRemark({ id: wordRemarkInfo.id });
     }
     
+    // 备注存在 -> 更新内容与图片（本地与远端）
     if (
       wordRemarkInfo.id &&
       (collectInputRemark.content || collectInputRemark?.imgs?.length)
@@ -286,6 +308,7 @@ export default function TranslateContent({
       });
       updateRemark(editItem);
     }
+    // 新备注 -> 创建社区备注（本地与远端）
     if (!wordRemarkInfo.id && (collectInputRemark.content || collectInputRemark.imgs?.length)) {
       let urls: string[] = [];
       if (collectInputRemark?.imgs && collectInputRemark?.imgs?.length) {
@@ -392,3 +415,10 @@ export default function TranslateContent({
     </div>
   );
 }
+/**
+ * 搜索结果面板：展示单词/句子查询结果与操作
+ * @param searchText - 当前查询文本
+ * 交互说明：
+ * - 根据输入判断走“单词模式”或“句子模式”，渲染不同结果区
+ * - 选择引擎后刷新结果，并允许切换收藏/外链/发音等操作
+ */

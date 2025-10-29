@@ -33,3 +33,8 @@ export const clearSetting = async()=>{
   // 清空浏览器同步存储中的所有数据
   return Browser.storage.sync.clear();
 }
+/**
+ * 同步存储（browser.storage.sync）
+ * - 跨设备同步用户设置
+ * - 注：受浏览器配额限制，注意数据体积
+ */

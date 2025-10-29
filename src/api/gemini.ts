@@ -179,3 +179,7 @@ export default class GeminiClass implements Chat {
     this.controller.abort("card is hidden");
   }
 }
+/**
+ * Gemini 封装：Google Generative AI 接入
+ * - 注意鉴权与配额限制
+ */

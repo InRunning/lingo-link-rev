@@ -127,4 +127,10 @@ export default forwardRef<{getMessageList:()=>Message[]}, WordChatParams>(
     );
   }
 )
-
+/**
+ * 单词对话：基于聊天式引擎补充语义/例句
+ * - 流式渲染与中断控制
+ * - 与 OpenAI/Gemini/DeepSeek 等实现对接，注意不同引擎的消息格式
+ * 使用建议：
+ * - 父组件销毁时请调用 abort/clear，避免悬挂的流式请求
+ */

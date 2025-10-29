@@ -116,3 +116,7 @@ export default class WenxinClass implements Chat {
     this.controller.abort()
   };
 }
+/**
+ * 文心一言封装：角色/消息格式转换与请求
+ * - 需映射 system->user 场景，见 formateMessage
+ */

@@ -130,3 +130,8 @@ export default async function ({
     onError(error as string);
   }
 }
+/**
+ * 翻译工具：封装与多引擎的统一交互入口
+ * - 负责根据引擎路由到对应实现
+ * - 处理目标/源语言与基础容错
+ */

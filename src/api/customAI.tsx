@@ -119,4 +119,7 @@ export default class CustomAIClass implements Chat {
     this.controller.abort('request failed')
   }
 }
-
+/**
+ * 自定义 AI 接入：允许用户配置地址/模型/鉴权
+ * - 兼容流式/非流式输出
+ */

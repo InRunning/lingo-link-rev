@@ -23,10 +23,13 @@ export default function DragableWrapper({
   onmouseenter: () => void;
   onClose: () => void;
 }) {
+  // 外层可拖拽节点引用（react-draggable 需要）
   const nodeRef = useRef<HTMLDivElement | null>(null);
+  // 内容区引用（用于绑定 mouseenter：阻止卡片被误隐藏）
   const contentRef = useRef<HTMLDivElement | null>(null);
   const openOption = async () => {
     try {
+      // 通过 runtime 向后台发送打开选项页的消息
       const message: ExtensionMessage = { type: "openOptions" };
       await Browser.runtime.sendMessage(message);
     } catch (error) {
@@ -37,10 +40,12 @@ export default function DragableWrapper({
     if (onmouseenter) {
       const contentDom = contentRef.current;
       const handleMouseEnter = () => {
+        // 当鼠标进入卡片内容时，通知上层取消隐藏定时器
         onmouseenter();
       };
       contentDom?.addEventListener("mouseenter", handleMouseEnter);
       return () => {
+        // 清理监听，避免内存泄漏
         contentDom?.removeEventListener("mouseenter", handleMouseEnter);
       };
     }
@@ -79,6 +84,7 @@ export default function DragableWrapper({
             padding: "2px 10px",
           }}
         /> */}
+        {/* 拖拽手柄：占位在卡片顶部，用于触发拖动 */}
         <div className="handle z-10 absolute left-0 top-0 bg-transparent w-full h-[30px]"></div>
         <div className="flex items-center absolute right-1 top-1 z-10">
           <Settings
@@ -90,6 +96,7 @@ export default function DragableWrapper({
             className="cursor-pointer  w-[24px] h-[24px] p-[4px]"
           />
         </div>
+        {/* 内容区域：承载翻译结果与交互子组件 */}
         <div className="text" ref={contentRef}>
           {children}
         </div>

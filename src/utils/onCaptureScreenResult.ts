@@ -164,3 +164,7 @@ export default async function onCaptureScreenResult(
     });
   };
 }
+/**
+ * 截图结果回调处理
+ * - 接收后台截图的 DataURL，并在前端做后续分发/展示
+ */

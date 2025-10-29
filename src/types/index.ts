@@ -172,3 +172,7 @@ export interface CollectBasicInfo {
   context: string;
 }
 export type CollectRemarkInfo = CommunityItemType
+/**
+ * 公共类型定义：Setting、Language、引擎枚举等
+ * - 字段语义明确，供全局复用
+ */

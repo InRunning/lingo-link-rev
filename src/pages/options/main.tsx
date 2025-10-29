@@ -150,3 +150,6 @@ export default function App() {
   );
 }
 createRoot(document.querySelector("#root")!).render(<App />);
+/**
+ * 选项页入口：聚合各设置分区并加载初始配置
+ */

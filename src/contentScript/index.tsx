@@ -142,3 +142,8 @@ export function SupportFullScreen() {
   // 渲染 LingoCard 组件，key 属性用于在状态变化时重新渲染
   return <LingoCard key={v} />;
 }
+/**
+ * 内容脚本入口：挂载翻译卡片与消息分发
+ * - 注入样式、监听选择/点击事件
+ * - 处理与后台/弹窗的消息通信
+ */

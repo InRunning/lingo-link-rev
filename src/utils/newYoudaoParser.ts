@@ -124,3 +124,7 @@ export function parseYouDaoHTML(html: string, lang: string): WordData {
     examTags,
   };
 }
+/**
+ * 有道词典解析（新版）：解析返回 HTML/结构化数据为统一模型
+ * - 提取音标、释义、例句
+ */

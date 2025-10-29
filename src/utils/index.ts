@@ -7,9 +7,15 @@ import type { Sww } from "@/types/words";
 import { Message } from "@/types/chat";
 import { createParser } from "eventsource-parser";
 import type { CollinsWord } from "@/types/index";
+/**
+ * 文本压缩：移除多余换行与空白
+ */
 export const formateText = (str: string) => {
   return str.replace(/\r\n/g, " ").replace(/\s+/g, " ");
 };
+/**
+ * 根据锚点 DOMRect 计算卡片坐标，并限制不超出视口
+ */
 export const preventBeyondWindow = ({
   boxWidth,
   boxHeight,
@@ -35,12 +41,14 @@ export const preventBeyondWindow = ({
   }
   return { x, y };
 };
+/** 比较两个单词是否相同（去空白 + 忽略大小写） */
 export const isSameWord = (word1: string, word2: string) => {
   if (!word1 || !word2) {
     return false;
   }
   return word1.trim().toLocaleLowerCase() === word2.trim().toLocaleLowerCase();
 };
+/** 在收藏列表中查找匹配单词 */
 export const getCollectWord = ({
   word,
   swwList,
@@ -52,6 +60,7 @@ export const getCollectWord = ({
     return isSameWord(item.word, word);
   });
 };
+/** 判断收藏列表中是否已存在该单词 */
 export const hasWord = ({
   word,
   swwList,
@@ -65,6 +74,9 @@ export const hasWord = ({
     })
   );
 };
+/**
+ * 后台拉取封装：统一 fetch 调用与返回格式
+ */
 export const backgroundFetch = async (param: BackgroundFetchParam) => {
   const { url, method, responseType } = param;
   const options: Record<string, any> = {
@@ -99,6 +111,7 @@ export const backgroundFetch = async (param: BackgroundFetchParam) => {
   });
 };
 
+/** 向后台页发送 fetch 请求，解决 CORS/权限问题 */
 export const sendBackgroundFetch = async (option: BackgroundFetchParam) => {
     const browser = (await import("webextension-polyfill")).default;
     const message: ExtensionMessage = {
@@ -108,6 +121,10 @@ export const sendBackgroundFetch = async (option: BackgroundFetchParam) => {
     return browser.runtime.sendMessage(message);
   
 };
+/**
+ * 粒度识别：判断输入在对应语言下是否为“一个词”
+ * 优先使用 Intl.Segmenter，不可用时针对英文退化判断
+ */
 export function isWord({
   input,
   lang,
@@ -136,6 +153,7 @@ export function isWord({
   const iterator = segmenter.segment(text)[Symbol.iterator]();
   return iterator.next().value?.segment === text;
 }
+/** 针对不同 AI 引擎做消息兼容适配（如文心角色映射） */
 export const formateMessage = (engine: EngineValue, messages: Message[]) => {
   if (engine === "wenxin") {
     return messages.map((item) => ({
@@ -145,6 +163,9 @@ export const formateMessage = (engine: EngineValue, messages: Message[]) => {
   }
   return messages;
 };
+/**
+ * SSE 流处理：逐块喂给 eventsource-parser 并回调数据
+ */
 export async function handleStream(
   reader: ReadableStreamDefaultReader<Uint8Array>,
   onData: (data: string) => void
@@ -164,6 +185,7 @@ export async function handleStream(
     parser.feed(text);
   }
 }
+// 递归压缩长边不超过 500 的比例
 function compressRatio({ width, height }: { width: number; height: number }) {
   const maxLimit = 500;
   if (width > maxLimit || height > maxLimit) {
@@ -174,6 +196,7 @@ function compressRatio({ width, height }: { width: number; height: number }) {
     return { width, height };
   }
 }
+/** 将图片压缩为 webp Blob，降低上传开销 */
 export function compressImg(img: File) {
   return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
@@ -208,9 +231,11 @@ export function compressImg(img: File) {
     reader.readAsDataURL(img);
   });
 }
+/** 当前焦点是否在可编辑输入（避免误触） */
 export const isSelectionInEditElement = () =>
   document.activeElement instanceof HTMLTextAreaElement ||
   document.activeElement instanceof HTMLInputElement;
+// iframe window 管理器：存取内容脚本建立的通信窗口
 const iframeWindowManager = () => {
   let iframeWindow: MessageEventSource | undefined = undefined;
   return {
@@ -223,6 +248,7 @@ const iframeWindowManager = () => {
   };
 };
 export const { getIframeWindow, setIframeWindow } = iframeWindowManager();
+/** 当前页面最近一次取词的词与上下文 */
 export const currentSelectionInfo: {
   word: string;
   context: string;
@@ -230,6 +256,7 @@ export const currentSelectionInfo: {
   word: "",
   context: "",
 };
+/** 调用浏览器 API 截图，并广播 DataURL 给当前页内容脚本 */
 export const screenshot = async () => {
   const browser = (await import("webextension-polyfill")).default;
   const res = await browser.tabs.captureVisibleTab();
@@ -243,6 +270,7 @@ export const screenshot = async () => {
   };
   browser.tabs.sendMessage(tabs[0].id!, message);
 };
+/** 让内容脚本返回当前窗口的选区信息 */
 export const getWindowSelectionInfo = async () => {
   const browser = (await import("webextension-polyfill")).default;
   const tabs = await browser.tabs.query({
@@ -254,6 +282,7 @@ export const getWindowSelectionInfo = async () => {
   };
   return await browser.tabs.sendMessage(tabs[0].id!, message);
 };
+/** 解析柯林斯词典 HTML，提取音标、词义与例句 */
 export const parseCollins = (html: string) => {
   const result: CollinsWord = {
     phonetic: null,
@@ -277,7 +306,9 @@ export const parseCollins = (html: string) => {
     });
   return result;
 };
+/** 是否运行于扩展弹窗页面环境 */
 export const isInPopup = /extension/.test(location.protocol);
+/** 将 base64 图片转换为 webp Blob */
 export function base64ToBlob(base64: string): Promise<Blob> {
   return new Promise((resolve) => {
     const img = new Image();

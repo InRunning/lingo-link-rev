@@ -122,4 +122,7 @@ export default class DeepSeekClass implements Chat {
     this.controller.abort('card is hidden')
   };
 }
-
+/**
+ * DeepSeek 封装：与 OpenAI 兼容的聊天接口
+ * - 传入模型名、温度、消息列表等参数
+ */

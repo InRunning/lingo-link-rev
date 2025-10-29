@@ -49,3 +49,7 @@ export const getSentencePrompt = (text:string,targetLanguage:string) => {
     contentPrompt
   }
 }
+/**
+ * 提示词模板：集中管理系统/用户提示词片段
+ * - 便于不同引擎与场景的拼装与复用
+ */

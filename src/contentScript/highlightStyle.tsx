@@ -99,3 +99,7 @@ export async function genHighlightStyle() {
 
   return style
 }
+/**
+ * 高亮样式渲染：为选中文本应用不同高亮风格
+ * - 注意滚动/重排性能，尽量批量更新 DOM
+ */

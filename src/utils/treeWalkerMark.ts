@@ -186,3 +186,7 @@ export const unMarkAll = () => {
   }
   console.timeEnd('unmark')
 };
+/**
+ * DOM 高亮标记：使用 TreeWalker 遍历并对匹配文本加标记
+ * - 注意避免修改输入区域/脚本注入区域
+ */

@@ -39,6 +39,7 @@ export default function Options() {
   const handleSourceLanguageChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    // 根据语言代码在 AllLanguage 中找到完整项，写入设置
     const item = AllLanguage.find((sub) => sub.language === e.target.value);
     setSetting({ sourceLanguage: item });
   };
@@ -90,6 +91,7 @@ export default function Options() {
    * 切换登录状态
    * 如果未登录则显示登录弹窗，如果已登录则退出登录
    */
+  // 登录/登出切换：未登录则弹出登录，已登录则清理本地数据并退出
   const toogleLogIn = () => {
     if (!setting.userInfo?.email) {
       showLogin();
@@ -112,6 +114,7 @@ export default function Options() {
    * 上传用户自定义的触发器图标
    * @param event 文件选择事件
    */
+  // 上传自定义触发器图标：上传到对象存储后回写 URL
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {

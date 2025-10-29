@@ -86,3 +86,7 @@ export const languages: Language[] = [
     name: "Japanese",
   },
 ];
+/**
+ * 有道翻译封装：REST 请求与结果格式标准化
+ * - 失败时返回错误信息，供 UI 兜底提示
+ */

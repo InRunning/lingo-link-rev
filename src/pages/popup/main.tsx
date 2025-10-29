@@ -1,3 +1,4 @@
+// 弹窗页面入口：查询、设置与结果展示
 import { createRoot } from "react-dom/client";
 import "@/assets/styles/tailwind.css";
 import { useCallback, useEffect, useState } from "react";

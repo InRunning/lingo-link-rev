@@ -44,3 +44,7 @@ export type CommunityItemType = {
   type:CommunityType;
   parentId?: string
 }
+/**
+ * 单词/例句类型：收藏项、社区备注、熟练度等
+ * - 用于本地/远端存储与 UI 展示
+ */

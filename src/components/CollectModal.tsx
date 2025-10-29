@@ -46,3 +46,7 @@ export default function CollectModal({
     </Draggable>
   );
 }
+/**
+ * 收藏弹窗：收集并补充单词上下文与备注
+ * - 与本地/远端存储同步
+ */
