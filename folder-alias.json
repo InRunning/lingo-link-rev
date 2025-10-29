@@ -4,5 +4,8 @@
     },
     "src/store.ts": {
         "description": "状态管理"
+    },
+    "src/storage/local.ts": {
+        "description": "浏览器本地数据管理"
     }
 }
