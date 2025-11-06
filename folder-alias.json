@@ -10,5 +10,11 @@
     },
     "src/components/CardDragableWrapper.tsx": {
         "description": "拖拽包装器组件"
+    },
+    "src/contentScript/lingoCard.tsx": {
+        "description": "卡片"
+    },
+    "src/hooks/useTreeWalker.tsx": {
+        "description": "标注单词"
     }
 }

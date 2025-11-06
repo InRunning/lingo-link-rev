@@ -37,15 +37,24 @@ export default function DragableWrapper({
     }
   };
   useEffect(() => {
+    // 检查是否存在 onmouseenter 回调函数
     if (onmouseenter) {
+      // 获取内容区域的DOM元素引用
       const contentDom = contentRef.current;
+      
+      // 创建鼠标进入事件处理函数
       const handleMouseEnter = () => {
         // 当鼠标进入卡片内容时，通知上层取消隐藏定时器
+        // 这可以防止用户与卡片交互时卡片被意外隐藏
         onmouseenter();
       };
+      
+      // 为内容区域添加鼠标进入事件监听器
       contentDom?.addEventListener("mouseenter", handleMouseEnter);
+      
+      // 返回清理函数，在组件卸载或依赖项变化时执行
       return () => {
-        // 清理监听，避免内存泄漏
+        // 清理事件监听器，避免内存泄漏和重复绑定
         contentDom?.removeEventListener("mouseenter", handleMouseEnter);
       };
     }
