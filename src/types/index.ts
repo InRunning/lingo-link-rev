@@ -50,7 +50,7 @@ export type ExtensionMessage =
       type: "getCurWindowSelectionInfo"
     }
   | {
-    type: 'refreshLocalData'
+    type: never
   }
 export type ExternalMessage = {
   type: 'getUser'

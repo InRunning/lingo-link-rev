@@ -65,7 +65,7 @@ import { useAtom } from "jotai"; // Jotai状态管理Hook
 
 // 自定义Hook
 // import useTreeWalker from "@/hooks/useTreeWalker"; // 悬停查词相关（已移除）
-import useContentScriptMessage from "@/hooks/useContentScriptMessage"; // 内容脚本消息处理Hook
+// 已移除：与生词/备注同步相关的消息 Hook
 
 // 快捷键处理库
 import hotkeys from "hotkeys-js"; // 键盘快捷键管理库
@@ -75,8 +75,7 @@ import hotkeys from "hotkeys-js"; // 键盘快捷键管理库
  * 这是整个翻译功能的入口组件，负责协调各种交互和状态管理
  */
 export default function ContentScriptApp() {
-  // 初始化消息处理Hook - 处理来自扩展其他部分的消息
-  useContentScriptMessage();
+  // 无需初始化已移除的消息 Hook
   
   // 使用useRef存储定时器ID，避免组件重新渲染时丢失
   // 移除悬停查词相关定时器
