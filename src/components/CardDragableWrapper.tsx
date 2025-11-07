@@ -77,7 +77,7 @@ export default function DragableWrapper({
           minHeight: defaultTranslateMinHeight,
           padding: 16,
         }}
-        className={`group absolute bg-inherit max-h-[100vh] p-[5px] flex flex-col  rounded-xl shadow-[0_0_16px_0px_rgba(0,0,0,0.2)] text-[14px]  overflow-hidden z-[2147483647]`}
+        className={`group fixed bg-inherit max-h-[100vh] p-[5px] flex flex-col  rounded-xl shadow-[0_0_16px_0px_rgba(0,0,0,0.2)] text-[14px]  overflow-hidden z-[2147483647]`}
       >
         {/* <GripHorizontal
           className="handle opacity-0 group-hover:opacity-50 z-10"

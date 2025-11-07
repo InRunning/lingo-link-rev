@@ -95,17 +95,7 @@ Browser.runtime.onMessage.addListener(async (message: ExtensionMessage) => {
   if (message.type === "openOptions") {
     return await Browser.runtime.openOptionsPage();
   }
-  if (message.type === "auth") {
-    if (chrome && chrome.identity && chrome.identity.getAuthToken) {
-      const tokenInfo = await chrome.identity.getAuthToken({
-        interactive: true,
-      });
-      const res = await fetch(
-        `https://www.googleapis.com/oauth2/v3/userinfo?alt=json&access_token=${tokenInfo.token}`
-      );
-      return await res.json();
-    }
-  }
+  // 已移除登录鉴权相关逻辑
   if (message.type === 'captureScreen') {
     return await Browser.tabs.captureVisibleTab()
   }

@@ -53,7 +53,7 @@ export default function TriggerIcon({
       // select-none防止用户选中文本
       className={`${
         show ? "visible" : "invisible"  // 根据show属性控制可见性
-      } cursor-pointer absolute z-[2147483647] select-none`}
+      } cursor-pointer fixed z-[2147483647] select-none`}
     >
       {/* 图标图片，填满整个容器，使用圆角样式 */}
       <img

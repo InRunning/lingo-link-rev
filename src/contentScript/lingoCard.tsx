@@ -160,12 +160,16 @@ export default function ContentScriptApp() {
         });
         x = position.x;
         y = position.y;
+        // 组件使用 fixed 定位，修正滚动偏移
+        x = x - window.scrollX;
+        y = y - window.scrollY;
       }
       
       // 如果手动指定了位置坐标，使用手动坐标
       if (position) {
-        x = position.x;
-        y = position.y;
+        // 传入位置通常为页面坐标（pageX/pageY），fixed 定位需减去滚动量
+        x = position.x - window.scrollX;
+        y = position.y - window.scrollY;
       }
       
       // 更新卡片位置状态
@@ -230,9 +234,10 @@ export default function ContentScriptApp() {
         (setting.showSelectionIcon ?? defaultSetting.showSelectionIcon)
       ) {
         setTriggerIconShow(true);
+        // TriggerIcon 采用 fixed 定位，使用 client 坐标
         setTriggerIconPosition({
-          x: event.pageX, // 使用页面坐标而不是客户端坐标
-          y: event.pageY + 10, // 向下偏移10像素
+          x: event.clientX,
+          y: event.clientY + 10,
         });
       }
     };
@@ -244,7 +249,8 @@ export default function ContentScriptApp() {
     const handleMouseDown = function (event: MouseEvent) {
       const target = event.target as HTMLElement;
       // 如果点击的不是扩展相关的元素，则隐藏UI
-      if (target.tagName.toUpperCase() !== "LINGO-LINK") {
+      const inWidget = Boolean(target.closest('lingo-link, lingo-link-enhanced'));
+      if (!inWidget) {
         setTriggerIconShow(false);
         setCardShow(false);
       }

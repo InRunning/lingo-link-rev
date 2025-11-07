@@ -81,8 +81,9 @@ class LingoLink extends HTMLElement {
  * 如果 lingo-link-enhanced 元素尚未注册，则注册它并在文档中创建一个实例
  */
 if (!customElements.get("lingo-link-enhanced")) {
- customElements.define("lingo-link-enhanced", LingoLink);
- document.documentElement.appendChild(document.createElement("lingo-link-enhanced"));
+  customElements.define("lingo-link-enhanced", LingoLink);
+  const host = document.body || document.documentElement;
+  host.appendChild(document.createElement("lingo-link-enhanced"));
 }
 
 /**
@@ -123,7 +124,7 @@ export function SupportFullScreen() {
         setV((pre) => pre + 1);
       } else {
         // 退出全屏：将元素移回文档根元素
-        document.documentElement.appendChild(
+        (document.body || document.documentElement).appendChild(
           document.querySelector("lingo-link-enhanced")!
         );
         setV((pre) => pre + 1);

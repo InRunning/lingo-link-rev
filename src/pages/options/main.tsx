@@ -1,13 +1,11 @@
 import { createRoot } from "react-dom/client";
 import "@/assets/styles/tailwind.css";
 import { useState, useEffect, ReactNode } from "react";
-import DataManage from "./dataManage";
 import { ToastContainer } from "@/components/Toast";
 import Options from "./options";
 import "@/i18n.ts";
 import EnginesSetting from "./enginsSetting";
 import ExternalLinks from "./externalLiks";
-import { wordListUrl, wordListWindowName } from "@/utils/const";
 // import ScreenshotSetting from "./screenshotSetting";
 import Other from "./other";
 import Sidebar from "./sidebar";
@@ -40,18 +38,7 @@ export default function App() {
       active: false,
       component: <ExternalLinks />,
     },
-    {
-      name: "Vocabulary Notebook",
-      path: "/wordList",
-      active: false,
-      component: null,
-    },
-    {
-      name: "Words synchronization",
-      path: "/dataManage",
-      active: false,
-      component: <DataManage />,
-    },
+    // 已移除：词汇本与同步功能
     {
       name: "Other",
       path: "/other",
@@ -75,10 +62,6 @@ export default function App() {
     );
   }, [menus]);
   const onMenuClick = async (item: MenuItem) => {
-    if (item.path === "/wordList") {
-      window.open(wordListUrl, wordListWindowName);
-      return;
-    }
     if (item.externalLink) {
       window.open(item.externalLink);
       return;

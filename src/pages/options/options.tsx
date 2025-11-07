@@ -1,14 +1,9 @@
 import type { InterfaceLanguage } from "@/types";
 import { AllLanguage, LangCode, SourceLanguage, defaultSetting } from "@/utils/const";
-import Login, { showLogin } from "@/components/Login";
 import { useEffect } from "react";
-import { setLocal } from "@/storage/local";
 import { useTranslation } from "react-i18next";
-import { getSession, setSession } from "@/storage/session";
 import triggerIcon from "@/assets/trigger.png";
 import { upload } from "@/api";
-import browser from "webextension-polyfill";
-import type { Storage } from "webextension-polyfill";
 import { useAtom } from "jotai";
 import { settingAtom } from "@/store";
 import HotkeysInput from "./hotkeyInput";
@@ -37,39 +32,7 @@ export default function Options() {
     const item = AllLanguage.find((sub) => sub.language === e.target.value);
     setSetting({ sourceLanguage: item });
   };
-  /**
-   * 检查并处理登录状态
-   * 监听会话存储变化，如果需要登录则显示登录弹窗
-   */
-  useEffect(() => {
-    // 检查当前会话是否需要登录
-    getSession().then((res) => {
-      if (res.showLogin) {
-        setTimeout(() => {
-          showLogin();
-        }, 100);
-        setSession({ showLogin: false });
-      }
-    });
-    
-    // 监听会话存储变化
-    const handleSessionChange = (
-      changes: Storage.StorageAreaOnChangedChangesType
-    ) => {
-      if (changes.showLogin && changes.showLogin.newValue) {
-        setTimeout(() => {
-          showLogin();
-        }, 100);
-        setSession({ showLogin: false });
-      }
-    };
-    browser.storage.session.onChanged.addListener(handleSessionChange);
-
-    // 清理函数：移除事件监听器
-    return () => {
-      browser.storage.session.onChanged.removeListener(handleSessionChange);
-    };
-  }, []);
+  // 已移除登录相关监听
   /**
    * 监听界面语言设置变化并更新国际化语言
    */
@@ -81,20 +44,7 @@ export default function Options() {
     }
   }, [i18n, setting.interfaceLanguage]);
 
-  /**
-   * 切换登录状态
-   * 如果未登录则显示登录弹窗，如果已登录则退出登录
-   */
-  // 登录/登出切换：未登录则弹出登录，已登录则清理本地数据并退出
-  const toogleLogIn = () => {
-    if (!setting.userInfo?.email) {
-      showLogin();
-    } else {
-      // 退出登录：清除用户信息和生词列表
-      setSetting({userInfo: null});
-      setLocal({ swwList: [] });
-    }
-  };
+  // 已移除登录切换与生词清理
 
   /**
    * 更改界面语言
@@ -124,23 +74,7 @@ export default function Options() {
   return (
     <div>
       <div className="grid grid-cols-1 gap-9">
-        {/* 账户设置区域 */}
-        <div>
-          <div className="font-semibold text-[17px] mb-2">{t("Account")}</div>
-          <div>
-            <span className="mr-2">
-              {setting.userInfo?.email || t("Not Logged In State")}
-            </span>
-            <button
-              onClick={toogleLogIn}
-              className={`btn btn-sm ${
-                !setting.userInfo?.email ? "btn-primary" : ""
-              }`}
-            >
-              {setting.userInfo?.email ? t("Sign out") : t("Sign in")}
-            </button>
-          </div>
-        </div>
+        {/* 已移除：登录账户设置 */}
         {/* 显示触发器图标设置 */}
         <label>
           <div className="font-semibold text-[17px] mb-2">
@@ -170,31 +104,7 @@ export default function Options() {
             <HotkeysInput />
           </div>
         </div>
-        {/* 自动保存单词设置 */}
-        <label>
-          <div className="font-semibold text-[17px] mb-2">
-            {t("Auto Save Word When Searching")}
-          </div>
-          <div className="flex items-center">
-            <input
-                type="checkbox"
-                onChange={(e) => {
-                  // 如果开启自动保存但未登录，则显示登录弹窗
-                  if (e.target.checked && !setting.userInfo) {
-                    showLogin()
-                  } else {
-                    setSetting({
-                      autoSaveWord: e.target.checked,
-                    });
-                  }
-                }}
-                checked={
-                    setting.autoSaveWord ?? defaultSetting.autoSaveWord
-                }
-                className="checkbox"
-            />
-          </div>
-        </label>
+        {/* 已移除：自动保存单词 */}
         {/* 触发器图标设置 */}
         <div>
           <div className="font-semibold text-[17px] mb-2">
@@ -322,8 +232,7 @@ export default function Options() {
           </select>
         </label>
       </div>
-      {/* 登录组件 */}
-      <Login/>
+      {/* 已移除登录组件 */}
     </div>
   );
 }

@@ -1,22 +1,11 @@
 import YoudaoSpeaker from "./Speaker";
-import {
-  CheckCheck,
-  Heart,
-  Undo2,
-  MessageCircle,
-  Pencil,
-  Inbox,
-  Carrot,
-} from "lucide-react";
-import { useRef } from "react";
-import { CommunityItemType, Sww } from "@/types/words";
+// import { useRef } from "react";
+// import { CommunityItemType, Sww } from "@/types/words";
 import Highlight from "./Highlight";
 import useYoudao from "./useYoudao";
 import { useTranslation } from "react-i18next";
-import RenderWordChat from "./WordChat";
 import { defaultSetting } from "@/utils/const";
 //import { useConversationContext } from "@/context/conversation";
-import WordChat from "./WordChat";
 // import useCollins from "./useCollins";
 import CardFooter from "./CardFooter";
 import { EngineValue } from "@/types";
@@ -24,7 +13,6 @@ import ContentMore from "./ContentMore";
 import useOldYoudao from "./useOldYoudao";
 import { useAtom } from "jotai";
 import { settingAtom } from "@/store";
-import RenderRemark from "./RenderRemark";
 function RenderYoudaoWord({ searchText }: { searchText: string }) {
  const {t} = useTranslation();
   const [setting] = useAtom(settingAtom);
@@ -61,9 +49,7 @@ function RenderYoudaoWord({ searchText }: { searchText: string }) {
                   <div className="translate-y-[4px]">
                     <YoudaoSpeaker
                       lang={sourceLang}
-                      autoPlay={
-                        (index === 1 && wordAutoPlay)
-                      }
+                      autoPlay={(index === 1 && wordAutoPlay)}
                       text={searchText}
                       type={index + 1 + ""}
                     />
@@ -85,7 +71,6 @@ function RenderYoudaoWord({ searchText }: { searchText: string }) {
               {wordData.explains.length === 0 && !loading && (
                 <>
                   <div className="text-xs flex items-center  justify-center space-x-1 text-center text-gray-500">
-                    <Inbox className="w-[15px] h-[15px]" />
                     <span>{t("The word is not included")}</span>,
                     <span>{t("Check Language Set")}</span>
                   </div>
@@ -213,26 +198,12 @@ function RenderCollinsWord({ searchText }: { searchText: string }) {
   );
 }
 
-
-const weightArr = [1, 2, 3, 4, 5];
 export default function RenderWord({
   searchText,
-  collectInfo,
-  remarkInfo,
-  onHeartClick,
-  onMasterClick,
-  onPencilClick,
-  onWeightChange,
   currentEngine,
   onRefresh,
 }: {
   searchText: string;
-  collectInfo: Sww | undefined;
-  remarkInfo: Partial<CommunityItemType>
-  onHeartClick: () => void;
-  onMasterClick: () => void;
-  onPencilClick: () => void;
-  onWeightChange: (num: number) => void;
   currentEngine: EngineValue;
   onRefresh: () => void;
 }) {
@@ -240,25 +211,12 @@ export default function RenderWord({
   // const { setConversationEngine, setConversationShow, setMessageList } =
   //   useConversationContext();
   const [setting] = useAtom(settingAtom);
-  const wordChatRef = useRef<React.ComponentRef<typeof WordChat>>(null);
   const wordAutoPlay = setting.autoPronounce ?? defaultSetting.autoPronounce;
-  const isCollected = Boolean(collectInfo);
-  const isMastered =
-    collectInfo &&
-    (collectInfo.masteryLevel === 1 || collectInfo.masteryLevel === 2);
   const sourceLang =
     setting.sourceLanguage?.language ?? defaultSetting.sourceLanguage.language;
-  const wordSystemPrompt =
-    setting.wordSystemPrompt ?? defaultSetting.wordSystemPrompt;
-  const wordUserContent =
-    setting.wordUserContent ?? defaultSetting.wordUserContent;
   const targetLang = setting.targetLanguage ?? defaultSetting.targetLanguage;
   
-  const enterConversation = () => {
-    // setConversationShow(true);
-    // setMessageList(wordChatRef.current?.getMessageList() ?? []);
-    // setConversationEngine(currentEngine);
-  };
+  // 已移除会话入口
   let result;
   try {
     if (!searchText) {
@@ -277,81 +235,7 @@ export default function RenderWord({
                 type={"2"}
               />
             )}
-            <div className="ml-5 flex items-center space-x-1 mt-[2px]">
-              <div
-                onClick={onHeartClick}
-                data-tip={
-                  isCollected
-                    ? t("Remove from collection")
-                    : t("Add to collection")
-                }
-                className="bg-base-300 p-[4px] rounded tooltip tooltip-bottom w-[20px] h-[20px] cursor-pointer"
-              >
-                <Heart
-                  className={`w-full h-full stroke-base-content ${
-                    isCollected ? "fill-base-content stroke-base-content" : ""
-                  } `}
-                />
-              </div>
-              {isCollected && (
-                <div
-                  onClick={onMasterClick}
-                  data-tip={isMastered ? t("Forgot") : t("Mastered")}
-                  className="bg-base-300 p-[4px] rounded tooltip tooltip-bottom w-[20px] h-[20px] cursor-pointer"
-                >
-                  {isMastered ? (
-                    <Undo2
-                      className={`w-full h-full stroke-base-content stroke-2`}
-                    />
-                  ) : (
-                    <CheckCheck
-                      className={`w-full h-full stroke-base-content`}
-                    />
-                  )}
-                </div>
-              )}
-              {(isCollected && !remarkInfo.content && !remarkInfo.imgs?.length) ? (
-                <div
-                  className="bg-base-300 p-[4px] rounded tooltip tooltip-bottom w-[20px] h-[20px] cursor-pointer"
-                  data-tip={t("Take Notes")}
-                  onClick={onPencilClick}
-                >
-                  <MessageCircle className="w-full h-full" />
-                </div>
-              ) : null}
-              {isCollected && (
-                <>
-                  <div className="hidden dropdown dropdown-bottom">
-                    <div
-                      tabIndex={0}
-                      data-tip={t("Level of importance")}
-                      className="tooltip tooltip-bottom bg-base-300 flex items-center justify-center w-[28px] h-[20px] rounded  cursor-pointer"
-                    >
-                      <Carrot className="w-[12px] h-[12px]" />
-                      <span className="text-[13px] ml-[2px]">
-                        {collectInfo?.weight ?? 1}
-                      </span>
-                    </div>
-                    <div
-                      tabIndex={0}
-                      className="dropdown-content rounded-lg shadow-xl bg-base-300 flex items-center p-1 z-[1]"
-                    >
-                      {weightArr.map((item) => (
-                        <li className={`inline-block m-[1px]`} key={item}>
-                          <input
-                            onChange={() => onWeightChange(item)}
-                            type="radio"
-                            className="btn btn-xs btn-ghost"
-                            checked={item === (collectInfo?.weight ?? 1)}
-                            aria-label={item + ""}
-                          />
-                        </li>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+            <div className="ml-5 flex items-center space-x-1 mt-[2px]"></div>
           </div>
           {currentEngine === "collins" && (
             <RenderCollinsWord
@@ -363,58 +247,11 @@ export default function RenderWord({
               <RenderYoudaoWord searchText={searchText} />
             </>
           )}
-          
-          {collectInfo && collectInfo.context && (
-            <div className="my-2">
-              <div className="flex items-center space-x-2 mb-1">
-                <span className="text-lg font-bold">
-                  {t("Sentence Containing the Word")}
-                </span>
-                <div
-                  data-tip={t("Edit")}
-                  onClick={onPencilClick}
-                  className="bg-base-300 p-[4px] rounded tooltip tooltip-bottom w-[20px] h-[20px] cursor-pointer"
-                >
-                  <Pencil className="w-full h-full" />
-                </div>
-              </div>
-              <div>
-                <Highlight
-                  highlightClassName="font-bold"
-                  context={collectInfo.context}
-                  wordString={JSON.stringify([searchText])}
-                />
-              </div>
-            </div>
-          )}
-          { (remarkInfo.content || remarkInfo.imgs?.length) ? (
-            <div className="my-2">
-              <div className="flex items-center space-x-2 mb-1">
-                <span className="text-lg font-bold">{t("Notes")}</span>
-                <div
-                  data-tip={t("Edit")}
-                  onClick={onPencilClick}
-                  className="bg-base-300 p-[4px] rounded tooltip tooltip-bottom w-[20px] h-[20px] cursor-pointer"
-                >
-                  <Pencil className="w-full h-full" />
-                </div>
-              </div>
-              <RenderRemark content={remarkInfo.content} imgs={remarkInfo.imgs ?? []} />
-            </div>
-          ) : null}
-          <RenderWordChat
-            ref={wordChatRef}
-            wordSystemPrompt={wordSystemPrompt}
-            wordUserContent={wordUserContent}
-            targetLang={targetLang}
-            currentEngine={currentEngine}
-          />
           <CardFooter
             currentEngine={currentEngine}
             sourceLang={sourceLang}
             targetLang={targetLang}
             onRefresh={onRefresh}
-            enEnterConversationClick={enterConversation}
             searchText={searchText}
           />
         </div>

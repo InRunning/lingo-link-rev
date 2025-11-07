@@ -13,7 +13,6 @@ export default function CardFooter({
   currentEngine: string;
   sourceLang: string;
   onRefresh: () => void;
-  enEnterConversationClick: () => void;
   searchText: string;
 }) {
   const { t } = useTranslation();
@@ -41,15 +40,6 @@ export default function CardFooter({
           >
             <RotateCcw className={`w-[14px] h-[14px] fill-none`} />
           </span>
-          {/* {currentEngine !== "google" && currentEngine !== "youdao" && (
-            <span
-              onClick={enEnterConversationClick}
-              data-tip={t("Enter The Conversation")}
-              className="ml-2 text-gray-500 mt-[2px] p-[1px] rounded tooltip tooltip-top  cursor-pointer"
-            >
-              <MessagesSquare className={`w-[14px] h-[14px] fill-none`} />
-            </span>
-          )} */}
         </div>
         {!isInPopup && ExternalCom}
       </div>

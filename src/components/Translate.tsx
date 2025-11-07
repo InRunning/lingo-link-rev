@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
-import { CheckCheck, Heart, Undo2, MessageCircle, Pencil } from "lucide-react";
-import Highlight from "./Highlight";
-import type { CommunityItemType, Sww } from "@/types/words";
+// 精简：移除收藏、备注、会话等与背单词/登录相关的交互
+// import { CheckCheck, Heart, Undo2, MessageCircle, Pencil } from "lucide-react";
+// import type { CommunityItemType, Sww } from "@/types/words";
 import InputBlink from "./InputBlink";
 import { Message } from "@/types/chat";
 import { useErrorBoundary } from "react-error-boundary";
@@ -14,23 +14,13 @@ import { EngineValue } from "@/types";
 import CardFooter from "./CardFooter";
 import { useAtom } from "jotai";
 import { settingAtom } from "@/store";
-import RenderRemark from "./RenderRemark";
+// import RenderRemark from "./RenderRemark";
 export default function Translate({
   searchText,
-  collectInfo,
-  remarkInfo,
-  onHeartClick,
-  onMasterClick,
-  onPencilClick,
   currentEngine,
   onRefresh,
 }: {
   searchText: string;
-  collectInfo: Sww | undefined;
-  remarkInfo:Partial<CommunityItemType>
-  onHeartClick: () => void;
-  onMasterClick: () => void;
-  onPencilClick: () => void;
   currentEngine: EngineValue;
   onRefresh: () => void;
 }) {
@@ -43,18 +33,11 @@ export default function Translate({
   const [translateResult, setTranslateResult] = useState("");
   const messageListRef = useRef<Message[]>([]);
   const { showBoundary } = useErrorBoundary();
-  const isMastered =
-    collectInfo &&
-    (collectInfo.masteryLevel === 1 || collectInfo.masteryLevel === 2);
   const sourceLang =
     setting.sourceLanguage?.language ?? defaultSetting.sourceLanguage.language;
   const targetLang = setting.targetLanguage ?? defaultSetting.targetLanguage;
 
-  const enterConversation = () => {
-    // setConversationShow(true);
-    // setMessageList(messageListRef.current);
-    // setConversationEngine(currentEngine);
-  };
+  // 已移除会话入口
   useEffect(() => {
     let ignore = false;
     translate({
@@ -107,53 +90,8 @@ export default function Translate({
       <div className="relative space-y-2 text-[15px] px-2 pb-3 pt-3">
         <div>
           <span>{translateResult}</span>
-
           {generating && <InputBlink />}
           <span className="align-bottom inline-flex items-center ml-[6px] gap-1">
-            <span className=" space-x-1 relative top-[3px]">
-              <span
-                onClick={onHeartClick}
-                data-tip={
-                  collectInfo
-                    ? t("Remove from collection")
-                    : t("Add to collection")
-                }
-                className="p-[1px] rounded tooltip tooltip-bottom w-[16px] h-[16px] cursor-pointer"
-              >
-                <Heart
-                  className={`w-full h-full stroke-base-content ${
-                    collectInfo ? "fill-base-content stroke-base-content" : ""
-                  } `}
-                />
-              </span>
-
-              {collectInfo && (
-                <span
-                  onClick={onMasterClick}
-                  data-tip={isMastered ? t("Forgot") : t("Mastered")}
-                  className="p-[4px] rounded tooltip tooltip-bottom w-[21px] h-[21px] cursor-pointer"
-                >
-                  {isMastered ? (
-                    <Undo2
-                      className={`w-full h-full stroke-base-content stroke-2`}
-                    />
-                  ) : (
-                    <CheckCheck
-                      className={`w-full h-full stroke-base-content`}
-                    />
-                  )}
-                </span>
-              )}
-              {collectInfo && !remarkInfo.content && !remarkInfo.imgs?.length && (
-                <span
-                  className="p-[4px] rounded tooltip tooltip-bottom w-[21px] h-[21px] cursor-pointer"
-                  data-tip={t("Take Notes")}
-                  onClick={onPencilClick}
-                >
-                  <MessageCircle className="w-full h-full" />
-                </span>
-              )}
-            </span>
             <YoudaoSpeaker
               className="mt-[1px]"
               lang={sourceLang}
@@ -163,55 +101,11 @@ export default function Translate({
             />
           </span>
         </div>
-
-        { (remarkInfo.content || remarkInfo.imgs?.length) ? (
-          <div className="my-2">
-            <div
-              className="flex items-center space-x-2 mb-1"
-              onClick={onPencilClick}
-            >
-              <span className="text-lg font-bold">{t("Notes")}</span>
-              <div
-                data-tip={t("Edit")}
-                className="p-[4px] rounded tooltip tooltip-bottom w-[21px] h-[21px] cursor-pointer"
-              >
-                <Pencil className="w-full h-full" />
-              </div>
-            </div>
-            <RenderRemark content={remarkInfo.content} imgs={remarkInfo.imgs ?? []} />
-            </div>
-        ) : null}
-        {collectInfo && collectInfo.context && (
-          <div className="my-2">
-            <div
-              className="flex items-center space-x-2 mb-1"
-              onClick={onPencilClick}
-            >
-              <span className="text-lg font-bold">
-                {t("Sentence Containing the Word")}
-              </span>
-              <div
-                data-tip={t("Edit")}
-                className="p-[4px] rounded tooltip tooltip-bottom w-[21px] h-[21px] cursor-pointer"
-              >
-                <Pencil className="w-full h-full" />
-              </div>
-            </div>
-            <div>
-              <Highlight
-                highlightClassName="font-bold"
-                context={collectInfo.context}
-                wordString={JSON.stringify([searchText])}
-              />
-            </div>
-          </div>
-        )}
         <CardFooter
           currentEngine={currentEngine}
           sourceLang={sourceLang}
           targetLang={targetLang}
           onRefresh={onRefresh}
-          enEnterConversationClick={enterConversation}
           searchText={searchText}
         />
       </div>
