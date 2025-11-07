@@ -9,11 +9,8 @@ import EnginesSetting from "./enginsSetting";
 import ExternalLinks from "./externalLiks";
 import { wordListUrl, wordListWindowName } from "@/utils/const";
 // import ScreenshotSetting from "./screenshotSetting";
-import UpdateLog from "@/components/UpdateLog";
-import Question from './question'
 import Other from "./other";
 import Sidebar from "./sidebar";
-import MovieWeb from "./movieWeb";
 export interface MenuItem {
   name: string;
   active: boolean;
@@ -54,30 +51,6 @@ export default function App() {
       path: "/dataManage",
       active: false,
       component: <DataManage />,
-    },
-    // {
-    //   name: "Screenshot API",
-    //   path: "/screenshot",
-    //   active: false,
-    //   component: <ScreenshotSetting />,
-    // },
-    {
-      name: "Movie Webs",
-      path: "/movieweb",
-      active: false,
-      component: <MovieWeb />,
-    },
-    {
-      name: "Update Log",
-      path: "/updateLog",
-      active: false,
-      component: <UpdateLog />,
-    },
-    {
-      name: "Question",
-      path: "/question",
-      active: false,
-      component: <Question />,
     },
     {
       name: "Other",

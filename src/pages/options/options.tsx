@@ -1,11 +1,5 @@
 import type { InterfaceLanguage } from "@/types";
-import {
-  AllLanguage,
-  HighlightName,
-  LangCode,
-  SourceLanguage,
-  defaultSetting, highlightStyles,
-} from "@/utils/const";
+import { AllLanguage, LangCode, SourceLanguage, defaultSetting } from "@/utils/const";
 import Login, { showLogin } from "@/components/Login";
 import { useEffect } from "react";
 import { setLocal } from "@/storage/local";
@@ -244,45 +238,7 @@ export default function Options() {
             />
           </div>
         </label>
-        {/* 高亮颜色设置 */}
-        <div>
-          <div className="font-semibold text-[17px] mb-2">
-            {t("Highlight Color")}
-          </div>
-          <div className="flex items-center">
-            <input
-                type="color"
-                className="rounded-sm cursor-pointer"
-                value={setting.highlightColor ?? defaultSetting.highlightColor}
-                onChange={(e) => {
-                  setSetting({
-                    highlightColor: e.target.value,
-                  });
-                }}
-            />
-          </div>
-        </div>
-        {/* 高亮样式设置 */}
-        <label>
-          <div className="font-semibold text-[17px] mb-2">
-            {t("Highlight Style")}
-          </div>
-          <select
-              value={setting.highlightStyle ?? defaultSetting.highlightStyle}
-              onChange={(e) => {
-                setSetting({
-                  highlightStyle: e.target.value as HighlightName,
-                });
-              }}
-              className="select select-bordered w-full"
-          >
-            {highlightStyles.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-            ))}
-          </select>
-        </label>
+        {/* 已移除：全站高亮样式设置（与悬停查词相关） */}
         {/* 自动发音设置 */}
         <label>
           <div className="font-semibold text-[17px] mb-2">

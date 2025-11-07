@@ -117,6 +117,10 @@ export interface Local {
   swwList?: Sww[];
   remarkList?:CommunityItemType[];
   openAIModelList?: { label: string; value: string }[];
+  lingoLinkEnhanced_swwList?: Sww[];
+  lingoLinkEnhanced_remarkList?: CommunityItemType[];
+  lingoLinkEnhanced_openAIModelList?: { label: string; value: string }[];
+  lingoLinkEnhanced_migrated?: boolean;
 }
 export interface GoogleUser {
   email: string;

@@ -3,7 +3,7 @@
  *
  * 这个文件定义了自定义元素 LingoLink，用于在网页上注入翻译功能
  * 主要功能：
- * 1. 创建自定义元素 lingo-link
+ * 1. 创建自定义元素 lingo-link-enhanced
  * 2. 在 Shadow DOM 中渲染 React 组件
  * 3. 处理全屏状态下的元素位置
  * 4. 注入高亮样式
@@ -21,16 +21,15 @@ import speakerStyle from "@/assets/styles/sperkerMotion.css?inline";
 import { useState, useEffect } from "react";
 
 // 导入注入脚本和国际化配置
-import "@/lib/injectScripts";
 import "@/i18n.ts";
 // 导入主要组件和样式生成器
 import LingoCard from './lingoCard'
-import {genHighlightStyle} from "@/contentScript/highlightStyle.tsx";
+// import {genHighlightStyle} from "@/contentScript/highlightStyle.tsx";
 
 /**
  * LingoLink 自定义元素类
  *
- * 这个类定义了 lingo-link 自定义元素，用于在网页上创建翻译功能的容器
+ * 这个类定义了 lingo-link-enhanced 自定义元素，用于在网页上创建翻译功能的容器
  * 使用 Shadow DOM 来隔离样式和功能，避免与页面样式冲突
  */
 class LingoLink extends HTMLElement {
@@ -79,11 +78,11 @@ class LingoLink extends HTMLElement {
 /**
  * 注册自定义元素
  *
- * 如果 lingo-link 元素尚未注册，则注册它并在文档中创建一个实例
+ * 如果 lingo-link-enhanced 元素尚未注册，则注册它并在文档中创建一个实例
  */
-if (!customElements.get("lingo-link")) {
-  customElements.define("lingo-link", LingoLink);
-  document.documentElement.appendChild(document.createElement("lingo-link"));
+if (!customElements.get("lingo-link-enhanced")) {
+ customElements.define("lingo-link-enhanced", LingoLink);
+ document.documentElement.appendChild(document.createElement("lingo-link-enhanced"));
 }
 
 /**
@@ -91,16 +90,17 @@ if (!customElements.get("lingo-link")) {
  *
  * 动态生成并注入文本高亮样式到文档头部
  */
-(async ()=>{
-  const style = document.createElement("style");
-  style.innerText = await genHighlightStyle();
-  document.head.appendChild(style);
-} )()
+// 保留：如需恢复全站高亮样式，可取消注释以下代码
+// (async ()=>{
+//   const style = document.createElement("style");
+//   style.innerText = await genHighlightStyle();
+//   document.head.appendChild(style);
+// } )()
 
 /**
  * 支持全屏模式的 React 组件
  *
- * 这个组件处理全屏状态变化，确保 lingo-link 元素在全屏时仍然可见
+ * 这个组件处理全屏状态变化，确保 lingo-link-enhanced 元素在全屏时仍然可见
  * 通过监听 fullscreenchange 事件来动态调整元素位置
  */
 export function SupportFullScreen() {
@@ -111,20 +111,20 @@ export function SupportFullScreen() {
     /**
      * 处理全屏状态变化的回调函数
      *
-     * 当进入全屏时，将 lingo-link 元素移动到全屏元素内
-     * 当退出全屏时，将 lingo-link 元素移回文档根元素
+     * 当进入全屏时，将 lingo-link-enhanced 元素移动到全屏元素内
+     * 当退出全屏时，将 lingo-link-enhanced 元素移回文档根元素
      */
     const handleFullScreen = function () {
       if (document.fullscreenElement) {
         // 进入全屏：将元素移动到全屏元素内
         document.fullscreenElement.appendChild(
-          document.querySelector("lingo-link")!
+          document.querySelector("lingo-link-enhanced")!
         );
         setV((pre) => pre + 1);
       } else {
         // 退出全屏：将元素移回文档根元素
         document.documentElement.appendChild(
-          document.querySelector("lingo-link")!
+          document.querySelector("lingo-link-enhanced")!
         );
         setV((pre) => pre + 1);
       }

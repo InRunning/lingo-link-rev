@@ -19,7 +19,7 @@ const [major, minor, patch, label = "0"] = version
 // 定义 Chrome 扩展的基本配置
 let json: ManifestV3Export = {
   manifest_version: 3,  // 使用 Manifest V3 规范
-  name: "lingo link",   // 扩展名称
+  name: "lingo link enhanced",   // 扩展名称
   // 版本号：最多四个由点号分隔的数字
   version: `${major}.${minor}.${patch}.${label}`,
   // 版本名称：可以使用完整的 Semver 格式
@@ -29,7 +29,7 @@ let json: ManifestV3Export = {
   },
   action: {
     default_icon: "src/assets/icon.png",  // 点击扩展图标时显示的图标
-    default_popup: "src/pages/popup/index.html",  // 点击扩展图标时弹出的页面
+    // 保留图标，不再提供弹出页（聚焦划词弹窗逻辑）
   },
   permissions: [
     "activeTab",      // 获取当前活动标签页的权限
@@ -80,7 +80,7 @@ if (target === "firefox") {
     ...{
       browser_specific_settings:{
         gecko: {
-          id: "lingolink@gmail.com",  // Firefox 扩展的 ID
+          id: "lingolink-enhanced@yourdomain.com",  // Firefox 扩展的 ID
         }
       },
       background: {

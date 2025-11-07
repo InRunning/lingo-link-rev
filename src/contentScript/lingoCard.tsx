@@ -54,17 +54,17 @@ import { ErrorBoundary } from "react-error-boundary"; // React错误边界组件
 import FallbackComponent from "@/components/FallbackComponent"; // 错误降级组件
 
 // 事件总线 - 用于组件间通信
-import { emitter } from "@/utils/mitt"; // 轻量级事件发布订阅库
+// import { emitter } from "@/utils/mitt"; // 轻量级事件发布订阅库（已不再使用）
 
 // 类型定义
 import { ExtensionMessage } from "@/types"; // 扩展消息类型定义
-import onCaptureScreenResult from "@/utils/onCaptureScreenResult"; // 屏幕截图结果处理
+// import onCaptureScreenResult from "@/utils/onCaptureScreenResult"; // 屏幕截图结果处理（已移除截图功能）
 
 // 状态管理Hook
 import { useAtom } from "jotai"; // Jotai状态管理Hook
 
 // 自定义Hook
-import useTreeWalker from "@/hooks/useTreeWalker"; // DOM树遍历Hook
+// import useTreeWalker from "@/hooks/useTreeWalker"; // 悬停查词相关（已移除）
 import useContentScriptMessage from "@/hooks/useContentScriptMessage"; // 内容脚本消息处理Hook
 
 // 快捷键处理库
@@ -79,10 +79,7 @@ export default function ContentScriptApp() {
   useContentScriptMessage();
   
   // 使用useRef存储定时器ID，避免组件重新渲染时丢失
-  // mouseoverCollectTimer: 处理鼠标悬停的延迟定时器
-  const mouseoverCollectTimer = useRef<number | null>(null);
-  // hideCardTimer: 处理隐藏卡片的延迟定时器
-  const hideCardTimer = useRef<number | null>(null);
+  // 移除悬停查词相关定时器
   
   // 使用Jotai的useAtom Hook读取全局设置状态
   const [setting] = useAtom(settingAtom);
@@ -181,54 +178,7 @@ export default function ContentScriptApp() {
     [setting.sourceLanguage?.language]
   );
 
-  /**
-   * 鼠标悬停处理回调 - 用于悬停显示翻译
-   * 当鼠标悬停在元素上时，延迟300ms后显示翻译
-   * @param ele - 悬停的DOM元素
-   */
-  const mouseoverCollectCallback = useCallback(
-    ({ ele }: { ele: HTMLElement }) => {
-      // 清除之前的定时器，避免多次触发
-      if (mouseoverCollectTimer.current) {
-        clearTimeout(mouseoverCollectTimer.current);
-      }
-      
-      // 设置新的定时器，300ms后显示翻译
-      mouseoverCollectTimer.current = window.setTimeout(() => {
-        showCardAndPosition({
-          text: ele.innerText, // 使用元素的内部文本
-          domRect: ele.getBoundingClientRect(), // 获取元素位置信息
-        });
-      }, 300);
-    },
-    [showCardAndPosition] // 依赖showCardAndPosition函数
-  );
-
-  /**
-   * 鼠标离开处理回调
-   * 用于清除悬停定时器
-   */
-  const mouseoutCollectCallback = useCallback(() => {
-    // 只有在卡片没有显示时才清除定时器
-    if (mouseoverCollectTimer.current && !cardShow) {
-      clearTimeout(mouseoverCollectTimer.current);
-    }
-  }, [cardShow]); // 依赖cardShow状态
-
-  /**
-   * 鼠标进入卡片事件处理
-   * 用于取消隐藏卡片的定时器
-   */
-  const onmouseenterCard = useCallback(() => {
-    // 清除隐藏卡片的定时器
-    hideCardTimer.current && clearTimeout(hideCardTimer.current);
-  }, []);
-
-  // 使用自定义Hook进行DOM树遍历，监听鼠标事件
-  useTreeWalker({
-    mouseoverCallback: mouseoverCollectCallback, // 鼠标悬停回调
-    mouseoutCallback: mouseoutCollectCallback,   // 鼠标离开回调
-  });
+  // 移除悬停查词逻辑：仅保留划词触发
 
   /**
    * 快捷键监听Effect
@@ -349,36 +299,13 @@ export default function ContentScriptApp() {
    * 隐藏卡片事件监听Effect
    * 通过事件总线监听其他组件发出的隐藏卡片请求
    */
-  useEffect(() => {
-    const hideCard = () => setCardShow(false);
-    
-    // 监听hideCard事件
-    emitter.on("hideCard", hideCard);
-    
-    return () => {
-      // 清理事件监听器
-      emitter.off("hideCard", hideCard);
-    };
-  }, []);
+  // 移除通过 mitt 总线的隐藏事件（无外部来源）
 
   /**
    * 显示卡片事件监听Effect
    * 通过事件总线监听其他组件发出的显示卡片请求
    */
-  useEffect(() => {
-    const showCard = (data: {
-      text: string;
-      domRect?: DOMRect;
-      position?: { x: number; y: number; };
-    }) => showCardAndPosition(data);
-    
-    // 监听showCard事件
-    emitter.on("showCard", showCard);
-    
-    return () => {
-      emitter.off("showCard", showCard);
-    };
-  }, [showCardAndPosition]);
+  // 移除通过 mitt 总线的显示事件（去除站点注入依赖）
 
   /**
    * 触发图标点击事件处理
@@ -431,17 +358,7 @@ export default function ContentScriptApp() {
         });
       }
 
-      // 处理屏幕截图结果
-      if (message.type === "onScreenDataurl") {
-        onCaptureScreenResult(
-          message.payload,
-          (result, domRect) =>
-            showCardAndPosition({
-              text: result,
-              domRect,
-            })
-        );
-      }
+      // 移除屏幕截图结果处理
 
       // 处理获取当前窗口选择信息的请求
       if (message.type === "getCurWindowSelectionInfo") {
@@ -499,7 +416,7 @@ export default function ContentScriptApp() {
             x={cardPosition.x}
             y={cardPosition.y}
             onClose={hideCard}
-            onmouseenter={onmouseenterCard}
+            onmouseenter={() => {}}
           >
             {/* 搜索结果组件 - 实际的翻译结果显示 */}
             <SearchResult searchText={searchText} />
