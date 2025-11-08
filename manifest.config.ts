@@ -40,6 +40,8 @@ let json: ManifestV3Export = {
     {
       js: ["src/contentScript/index.tsx"],  // 注入到网页的脚本文件
       matches: ["*://*/*"],  // 匹配所有网址
+      all_frames: true,       // 在所有 iframe 中注入
+      match_about_blank: true // 允许 about:blank / srcdoc 等空白页 iframe
     },
   ],
   options_page: "src/pages/options/index.html",  // 扩展选项页面

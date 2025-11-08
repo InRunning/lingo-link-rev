@@ -278,12 +278,10 @@ export default function ContentScriptApp() {
       }
 
       const selection = window.getSelection()?.toString().trim();
-      
-      // 如果有选中文本且选区包含在document.body中
-      if (
-        selection &&
-        window.getSelection()?.containsNode(document.body, true)
-      ) {
+      // 说明：Shadow DOM 中的选区并非 document.body 的后代，
+      // 使用 containsNode(document.body) 会错误地排除阴影根内的选择。
+      // 这里仅依据选中文本是否非空以及 rangeCount>0 作为有效性判定。
+      if (selection && window.getSelection()?.rangeCount) {
         // 更新全局的选择信息
         currentSelectionInfo.word = selection;
         currentSelectionInfo.context = getSentenceFromSelection(
@@ -368,10 +366,8 @@ export default function ContentScriptApp() {
       // 处理获取当前窗口选择信息的请求
       if (message.type === "getCurWindowSelectionInfo") {
         const selection = window.getSelection()?.toString().trim();
-        if (
-          selection &&
-          window.getSelection()?.containsNode(document.body, true)
-        ) {
+        // 同上，为兼容 Shadow DOM/iframe，仅判断文本是否非空
+        if (selection && window.getSelection()?.rangeCount) {
           // 返回选择信息
           return {
             word: selection,
