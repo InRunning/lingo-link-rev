@@ -99,6 +99,8 @@ export default function ContentScriptApp() {
     x: 0,
     y: 0,
   });
+  // 翻译卡片宽度（响应式）
+  const [cardWidth, setCardWidth] = useState<number>(defaultTranslateWidth);
   
   // 翻译卡片显示状态 - 控制卡片是否可见
   const [cardShow, setCardShow] = useState(false);
@@ -153,23 +155,25 @@ export default function ContentScriptApp() {
       // 初始化位置坐标
       let x = -300;
       let y = -300;
+
+      // 基于视口计算响应式宽度（92vw 上限不超过默认宽度）
+      const isWordInput = isWord({
+        input: text,
+        lang: setting.sourceLanguage?.language,
+      });
+      const baseWidth = isWordInput ? defaultCardWidth : defaultTranslateWidth;
+      const vw = typeof window !== 'undefined' ? window.innerWidth : baseWidth;
+      const responsiveWidth = Math.min(baseWidth, Math.floor(vw * 0.92));
+      setCardWidth(responsiveWidth);
       
       // 如果提供了DOM元素矩形，使用自动定位逻辑
       if (domRect) {
         const position = preventBeyondWindow({
           // 根据文本类型（单词 vs 句子）选择不同的卡片尺寸
-          boxWidth: isWord({
-            input: text,
-            lang: setting.sourceLanguage?.language,
-          })
-            ? defaultCardWidth      // 单词用小卡片
-            : defaultTranslateWidth, // 句子用大卡片
-          boxHeight: isWord({
-            input: text,
-            lang: setting.sourceLanguage?.language,
-          })
-            ? defaultCardMinHeight      // 单词卡片最小高度
-            : defaultTranslateMinHeight, // 句子卡片最小高度
+          boxWidth: responsiveWidth,
+          boxHeight: isWordInput
+            ? defaultCardMinHeight
+            : defaultTranslateMinHeight,
           domRect,    // 参考的DOM元素位置
           gap: 10,    // 与参考元素的间距
         });
@@ -185,6 +189,12 @@ export default function ContentScriptApp() {
         // 传入位置通常为页面坐标（pageX/pageY），fixed 定位需减去滚动量
         x = position.x - window.scrollX;
         y = position.y - window.scrollY;
+        // 在视口内做一次边界钳制，避免超出小屏幕
+        const pad = 8;
+        const maxX = Math.max(0, window.innerWidth - responsiveWidth - pad);
+        const maxY = Math.max(0, window.innerHeight - (isWordInput ? defaultCardMinHeight : defaultTranslateMinHeight) - pad);
+        x = Math.min(Math.max(pad, x), maxX);
+        y = Math.min(Math.max(pad, y), maxY);
       }
       
       // 更新卡片位置状态
@@ -502,6 +512,43 @@ export default function ContentScriptApp() {
     };
   }, [showCardAndPosition]);
 
+  /**
+   * 窗口尺寸变化时，若卡片展开则自适应宽度并校正位置
+   */
+  useEffect(() => {
+    const onResize = () => {
+      if (!cardShow) return;
+      const text = searchText || currentSelectionInfo.word;
+      if (!text) return;
+      // 优先使用 range 重新定位，保证贴近锚点
+      if (rangeRef.current) {
+        showCardAndPosition({
+          text,
+          domRect: rangeRef.current.getBoundingClientRect(),
+        });
+      } else {
+        // 否则仅按当前左上角进行一次边界钳制
+        const isWordInput = isWord({
+          input: text,
+          lang: setting.sourceLanguage?.language,
+        });
+        const baseWidth = isWordInput ? defaultCardWidth : defaultTranslateWidth;
+        const vw = typeof window !== 'undefined' ? window.innerWidth : baseWidth;
+        const responsiveWidth = Math.min(baseWidth, Math.floor(vw * 0.92));
+        setCardWidth(responsiveWidth);
+        const pad = 8;
+        const maxX = Math.max(0, window.innerWidth - responsiveWidth - pad);
+        const maxY = Math.max(0, window.innerHeight - (isWordInput ? defaultCardMinHeight : defaultTranslateMinHeight) - pad);
+        setCardPosition((prev) => ({
+          x: Math.min(Math.max(pad, prev.x), maxX),
+          y: Math.min(Math.max(pad, prev.y), maxY),
+        }));
+      }
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [cardShow, searchText, showCardAndPosition, setting.sourceLanguage?.language]);
+
   // 返回JSX - 组件的UI渲染部分
   return (
     <div
@@ -530,6 +577,8 @@ export default function ContentScriptApp() {
           <CardDragableWrapper
             x={cardPosition.x}
             y={cardPosition.y}
+            width={cardWidth}
+            maxWidth={cardWidth}
             onClose={hideCard}
             onmouseenter={() => {}}
           >

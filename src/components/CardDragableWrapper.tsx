@@ -16,12 +16,16 @@ export default function DragableWrapper({
   y,
   onmouseenter,
   onClose,
+  width,
+  maxWidth,
 }: {
   children: React.ReactNode;
   x: number;
   y: number;
   onmouseenter: () => void;
   onClose: () => void;
+  width?: number | string;
+  maxWidth?: number | string;
 }) {
   // 外层可拖拽节点引用（react-draggable 需要）
   const nodeRef = useRef<HTMLDivElement | null>(null);
@@ -72,8 +76,8 @@ export default function DragableWrapper({
         style={{
           left: x,
           top: y,
-          width: defaultTranslateWidth,
-          maxWidth: defaultTranslateMaxWidth,
+          width: width ?? defaultTranslateWidth,
+          maxWidth: maxWidth ?? defaultTranslateMaxWidth,
           minHeight: defaultTranslateMinHeight,
           padding: 16,
         }}

@@ -85,7 +85,7 @@ export default function App() {
   const activeItem = menus.filter((item) => item.active);
   return (
     <>
-      <div className="flex text-[16px]">
+      <div className="flex text-[16px] md:flex-row flex-col min-h-[100vh]">
         <Sidebar
           menus={menus.map((item) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -94,8 +94,8 @@ export default function App() {
           })}
           onMenuClick={onMenuClick}
         />
-        <div className="grow bg-white h-[100vh] overflow-y-scroll">
-          <div className="mx-auto py-[40px] max-w-2xl">
+        <div className="grow bg-white md:h-[100vh] h-auto md:overflow-y-scroll">
+          <div className="mx-auto py-[24px] md:py-[40px] max-w-2xl px-4 md:px-0">
             {activeItem[0].component}
           </div>
         </div>
