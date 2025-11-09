@@ -110,6 +110,22 @@ export default function ContentScriptApp() {
   const [searchText, setSearchText] = useState("");
 
   /**
+   * 移动端：划词后通过上下轻扫/滚动触发
+   * - 在 selectionchange 捕获有效选区后“武装”一次手势窗口
+   * - 在限定时间内，若垂直位移超阈值则触发弹卡
+   */
+  const isTouchDevice =
+    typeof window !== "undefined" &&
+    ("ontouchstart" in window || (navigator as any)?.maxTouchPoints > 0);
+  const gestureArmedRef = useRef(false);
+  const gestureArmedAtRef = useRef(0);
+  const initialScrollYRef = useRef(0);
+  const initialTouchYRef = useRef(0);
+  const lastSelectionPagePosRef = useRef<{ x: number; y: number } | null>(null);
+  const MOBILE_TRIGGER_DISTANCE = 22; // px，触发阈值（经验值）
+  const MOBILE_ARM_WINDOW = 1500; // ms，划词后可触发的时间窗口
+
+  /**
    * 显示翻译卡片并设置位置的回调函数
    * 使用useCallback优化性能，避免不必要的重新创建
    * @param text - 要翻译的文本
@@ -245,7 +261,7 @@ export default function ContentScriptApp() {
      * 鼠标按下事件处理
      * 用于隐藏触发图标和卡片
      */
-    const handleMouseDown = function (event: MouseEvent) {
+    const handleMouseDown = function (event: MouseEvent | TouchEvent) {
       const target = event.target as HTMLElement;
       // 如果点击的不是扩展相关的元素，则隐藏UI
       const inWidget = Boolean(target.closest('lingo-link, lingo-link-enhanced'));
@@ -258,11 +274,14 @@ export default function ContentScriptApp() {
     // 注册事件监听器
     document.body.addEventListener("mouseup", handleMouseUp);      // 鼠标释放
     document.body.addEventListener("mousedown", handleMouseDown);  // 鼠标按下
+    // 移动端补充：点击页面任意位置（非组件内）时隐藏卡片
+    document.body.addEventListener("touchstart", handleMouseDown, { passive: true });
 
     // 清理事件监听器
     return () => {
       document.body.removeEventListener("mouseup", handleMouseUp);
       document.body.removeEventListener("mousedown", handleMouseDown);
+      document.body.removeEventListener("touchstart", handleMouseDown as any);
     };
   }, [setting.showSelectionIcon]);
 
@@ -289,6 +308,25 @@ export default function ContentScriptApp() {
         );
         // 保存选中的Range对象，用于后续精确定位
         rangeRef.current = window.getSelection()?.getRangeAt(0);
+
+        // 移动端：武装一次“轻扫触发”窗口，并记录锚点的页面坐标
+        if (isTouchDevice && rangeRef.current) {
+          try {
+            const rect = rangeRef.current.getBoundingClientRect();
+            lastSelectionPagePosRef.current = {
+              x: rect.left + rect.width / 2 + window.scrollX,
+              y: rect.bottom + window.scrollY + 10,
+            };
+            initialScrollYRef.current = window.scrollY;
+            gestureArmedRef.current = true;
+            gestureArmedAtRef.current = Date.now();
+          } catch (_) {
+            // 忽略偶发不可测量的 range
+            lastSelectionPagePosRef.current = null;
+            gestureArmedRef.current = true;
+            gestureArmedAtRef.current = Date.now();
+          }
+        }
       }
     };
 
@@ -297,6 +335,82 @@ export default function ContentScriptApp() {
       document.removeEventListener("selectionchange", handleSelectionChange);
     };
   }, []);
+
+  /**
+   * 移动端：在滚动或触摸移动时检查是否触发弹卡
+   */
+  useEffect(() => {
+    if (!isTouchDevice) return;
+
+    const withinArmWindow = () => Date.now() - gestureArmedAtRef.current <= MOBILE_ARM_WINDOW;
+    const disarm = () => {
+      gestureArmedRef.current = false;
+      gestureArmedAtRef.current = 0;
+    };
+
+    const tryTriggerFromDelta = (deltaY: number) => {
+      if (!gestureArmedRef.current) return;
+      if (!withinArmWindow()) {
+        disarm();
+        return;
+      }
+      if (Math.abs(deltaY) < MOBILE_TRIGGER_DISTANCE) return;
+
+      // 有效触发：优先使用当前 range 定位，否则使用保存的页面坐标
+      const text = currentSelectionInfo.word;
+      if (!text) {
+        disarm();
+        return;
+      }
+      if (rangeRef.current) {
+        showCardAndPosition({
+          text,
+          domRect: rangeRef.current.getBoundingClientRect(),
+        });
+      } else if (lastSelectionPagePosRef.current) {
+        showCardAndPosition({
+          text,
+          position: {
+            x: lastSelectionPagePosRef.current.x,
+            y: lastSelectionPagePosRef.current.y,
+          },
+        });
+      } else {
+        // 兜底：使用当前视口中心点
+        showCardAndPosition({
+          text,
+          position: { x: window.scrollX + window.innerWidth / 2, y: window.scrollY + 120 },
+        });
+      }
+      disarm();
+    };
+
+    const onScroll = () => {
+      if (!gestureArmedRef.current) return;
+      const delta = window.scrollY - initialScrollYRef.current;
+      tryTriggerFromDelta(delta);
+    };
+
+    const onTouchStart = (ev: TouchEvent) => {
+      if (!gestureArmedRef.current) return;
+      initialTouchYRef.current = ev.touches[0]?.clientY ?? 0;
+    };
+    const onTouchMove = (ev: TouchEvent) => {
+      if (!gestureArmedRef.current) return;
+      const curY = ev.touches[0]?.clientY ?? 0;
+      const delta = initialTouchYRef.current - curY; // 手指上移为正，下移为负
+      tryTriggerFromDelta(delta);
+    };
+
+    document.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("touchstart", onTouchStart, { passive: true });
+    document.addEventListener("touchmove", onTouchMove, { passive: true });
+    return () => {
+      document.removeEventListener("scroll", onScroll);
+      document.removeEventListener("touchstart", onTouchStart);
+      document.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [showCardAndPosition, isTouchDevice]);
 
   /**
    * 隐藏卡片事件监听Effect
