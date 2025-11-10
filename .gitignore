@@ -27,3 +27,4 @@ node_modules/
 dist/
 pkg/
 lingo-link-enhanced.zip
+backend/local.yaml
