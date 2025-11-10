@@ -28,3 +28,5 @@ dist/
 pkg/
 lingo-link-enhanced.zip
 backend/local.yaml
+backend/lingo.db
+backend/*.db

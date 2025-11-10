@@ -115,6 +115,8 @@ help:
 	@echo "  quick      - 快速重新构建"
 	@echo "  dev        - 启动开发模式"
 	@echo "  lint       - 运行代码检查"
+	@echo "  run-backend - 启动后端服务 (Go)"
+	@echo "  tidy-backend - 后端依赖整理 (go mod tidy)"
 	@echo "  help       - 显示此帮助信息"
 	@echo ""
 	@echo "$(YELLOW)使用示例:$(RESET)"
@@ -122,6 +124,20 @@ help:
 	@echo "  make clean package      # 清理并打包"
 	@echo "  make verify            # 验证打包结果"
 	@echo "  make quick             # 快速重新构建"
+	@echo "  make run-backend       # 启动后端服务"
+
+# 后端相关
+.PHONY: run-backend
+run-backend:
+	@echo "$(BLUE)启动后端...$(RESET)"
+	@JWT_SECRET=$${JWT_SECRET:-dev-secret-please-change} \
+	RELAY_API_KEY=$${RELAY_API_KEY:-dummy} \
+	DB_DSN=$${DB_DSN:-} \
+	go run ./backend/cmd/server
+
+.PHONY: tidy-backend
+tidy-backend:
+	@cd backend && go mod tidy
 
 # 防止文件名冲突
 .DEFAULT_GOAL := all
