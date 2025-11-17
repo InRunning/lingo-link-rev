@@ -46,7 +46,7 @@ export const defaultTranslateMinHeight = 100;
  * 单词列表网站的URL地址
  */
 export const wordListUrl = "https://words.mywords.cc";
-  //export const wordListUrl = "https://words.mywords.cc/";
+//export const wordListUrl = "https://words.mywords.cc/";
 
 /**
  * 检查当前页面是否为单词列表页面
@@ -92,17 +92,17 @@ export const defaultSetting = {
   openAIKey: "",
   openAIAddress: "https://api.openai.com/v1/chat/completions",
   openAIModel: "gpt-4o",
-  
+
   // 翻译引擎配置
   engine: "google",
-  
+
   // 语言配置
   targetLanguage: formatZhCode(navigator.language), // 目标翻译语言，基于浏览器语言设置
   sourceLanguage: {                               // 源语言配置，默认英语
     language: "en",
     name: "English",
   },
-  
+
   // 界面显示配置
   showSelectionIcon: true,     // 是否显示选中文字的触发图标
   interfaceLanguage: navigator.language === "en" ? "en" : "zh", // 界面语言
@@ -110,10 +110,10 @@ export const defaultSetting = {
   triggerIconSize: 25,         // 触发图标的尺寸（像素）
   highlightColor: "black",     // 高亮显示颜色
   highlightStyle: "dashed" as HighlightName, // 高亮显示样式
-  
+
   // 功能配置
   autoSaveWord: false,         // 是否自动保存单词
-  
+
   // 已注释的配置选项（可能是历史遗留或实验性功能）
   // availableEngines: [
   //   {
@@ -125,7 +125,7 @@ export const defaultSetting = {
   //     value: "google",
   //   },
   // ] as EngineItem[],
-  
+
   // 已注释的系统提示词模板（可能是早期版本的翻译提示）
   // wordSystemPrompt: codeBlock`
   //   ${oneLineTrim`
@@ -146,34 +146,39 @@ export const defaultSetting = {
   //       词源：
   //       <词源>
   // `,
-  
+
   /**
    * 单词翻译的系统提示词
    * 用于指导AI如何解释单词含义，遵循牛津英汉词典格式
    */
-  wordSystemPrompt:'我正在学习英语，接下来我会提供给你一个句子和这个句子中的一个单词，请以牛津英汉词典的格式解释句子中的这个单词的含义，并举出一个英文例句，同时把英文例句翻译成中文',
-  
+  wordSystemPrompt: `我正在学习英语，接下来我会提供给你一个句子和这个句子中的一个单词，请以牛津英汉词典的格式解释句子中的这个单词的含义，输出格式：
+释义: 单词在句子中的释义，要精简
+美式音标: [美式音标]
+英式音标: [英式音标]
+例句: 英文例句
+翻译: 例句的中文翻译`,
+
   // 已注释的用户内容模板
-  //wordUserContent: `单词是：{word}`,
-  
+  //wordUserContent: `单词是：{ word } `,
+
   /**
    * 单词翻译的用户内容模板
    * 包含需要翻译的单词和上下文句子
    */
   wordUserContent:'单词是：{word}，句子是{sentence}',
-  
+
   /**
    * 句子翻译的系统提示词
    * 要求AI只提供翻译结果，不添加无关内容
    */
-  sentenceSystemPrompt: `You are a translation AI. You only need to provide the translation result without adding any irrelevant content.`,
-  
+  sentenceSystemPrompt: `You are a translation AI.You only need to provide the translation result without adding any irrelevant content.`,
+
   /**
    * 句子翻译的用户内容模板
    * 指定翻译目标和要翻译的句子
    */
-  sentenceUserContent: `Translate the following text to {targetLanguage}:{sentence}`,
-  
+  sentenceUserContent: `Translate the following text to { targetLanguage }: { sentence } `,
+
   /**
    * 外部链接配置
    * 提供跳转到其他翻译或词典网站的快捷方式
@@ -195,7 +200,7 @@ export const defaultSetting = {
       link: "https://www.collinsdictionary.com/zh/dictionary/english/{text}",
     },
   ],
-  
+
   /**
    * 翻译引擎列表配置
    * 定义所有可用的翻译服务和其属性
