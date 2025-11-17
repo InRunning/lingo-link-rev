@@ -439,10 +439,26 @@ export default function ContentScriptApp() {
    * 当用户点击触发图标时显示翻译卡片
    */
   const handleTriggerClick = () => {
-    showCardAndPosition({
-      text: currentSelectionInfo.word,
-      domRect: rangeRef.current!.getBoundingClientRect(),
-    });
+    const text = currentSelectionInfo.word;
+    if (!text) {
+      return;
+    }
+
+    // 优先使用选区 Range 定位，如果不可用则退化为使用触发图标自身的位置
+    if (rangeRef.current) {
+      showCardAndPosition({
+        text,
+        domRect: rangeRef.current.getBoundingClientRect(),
+      });
+    } else {
+      showCardAndPosition({
+        text,
+        position: {
+          x: triggerIconPosition.x,
+          y: triggerIconPosition.y,
+        },
+      });
+    }
   };
 
   /**
@@ -475,14 +491,26 @@ export default function ContentScriptApp() {
       // 处理显示卡片的请求
       if (message.type === "showCardAndPosition") {
         // 检查是否有当前选择信息
-        if (!currentSelectionInfo.word || !rangeRef.current) {
+        if (!currentSelectionInfo.word) {
           console.warn("don't support input element selection");
           return;
         }
-        showCardAndPosition({
-          text: currentSelectionInfo.word,
-          domRect: rangeRef.current!.getBoundingClientRect(),
-        });
+
+        // 同 handleTriggerClick：优先使用 Range，缺失时退化为视口中部
+        if (rangeRef.current) {
+          showCardAndPosition({
+            text: currentSelectionInfo.word,
+            domRect: rangeRef.current.getBoundingClientRect(),
+          });
+        } else {
+          showCardAndPosition({
+            text: currentSelectionInfo.word,
+            position: {
+              x: window.scrollX + window.innerWidth / 2,
+              y: window.scrollY + 120,
+            },
+          });
+        }
       }
 
       // 移除屏幕截图结果处理
