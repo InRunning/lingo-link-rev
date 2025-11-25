@@ -2,7 +2,7 @@ import type { InterfaceLanguage } from "@/types";
 import { AllLanguage, LangCode, SourceLanguage, defaultSetting } from "@/utils/const";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import triggerIcon from "@/assets/trigger.png";
+import triggerIcon from "@/assets/icon.png";
 import { upload } from "@/api";
 import { useAtom } from "jotai";
 import { settingAtom } from "@/store";

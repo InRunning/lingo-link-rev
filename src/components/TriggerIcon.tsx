@@ -1,5 +1,5 @@
 // 导入默认触发器图标
-import triggerIcon from "@/assets/trigger.png";
+import triggerIcon from "@/assets/icon.png";
 
 // 构建默认图标的完整URL路径
 const defaultIconUrl = new URL(triggerIcon, import.meta.url).href;

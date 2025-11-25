@@ -16,5 +16,8 @@
     },
     "src/hooks/useTreeWalker.tsx": {
         "description": "标注单词"
+    },
+    "manifest.config.ts": {
+        "description": "插件配置文件"
     }
 }

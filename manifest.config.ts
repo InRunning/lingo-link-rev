@@ -19,7 +19,7 @@ const [major, minor, patch, label = "0"] = version
 // 定义 Chrome 扩展的基本配置
 let json: ManifestV3Export = {
   manifest_version: 3,  // 使用 Manifest V3 规范
-  name: "lingo link enhanced",   // 扩展名称
+  name: "click translate",   // 扩展名称
   // 版本号：最多四个由点号分隔的数字
   version: `${major}.${minor}.${patch}.${label}`,
   // 版本名称：可以使用完整的 Semver 格式
@@ -64,7 +64,7 @@ if (target === "firefox") {
   json = {
     ...json,
     ...{
-      browser_specific_settings:{
+      browser_specific_settings: {
         gecko: {
           id: "lingolink-enhanced@yourdomain.com",  // Firefox 扩展的 ID
         }

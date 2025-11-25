@@ -17,6 +17,7 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@thedutchcoder/postcss-rem-to-px": "^0.0.2",
+    "canvas": "^3.2.0",
     "common-tags": "^1.8.2",
     "daisyui": "^4.12.2",
     "eventsource-parser": "^1.1.2",
