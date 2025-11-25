@@ -1,18 +1,15 @@
 import YoudaoSpeaker from "./Speaker";
-// import { useRef } from "react";
-// import { CommunityItemType, Sww } from "@/types/words";
 import Highlight from "./Highlight";
 import useYoudao from "./useYoudao";
 import { useTranslation } from "react-i18next";
 import { defaultSetting } from "@/utils/const";
-//import { useConversationContext } from "@/context/conversation";
-// import useCollins from "./useCollins";
 import CardFooter from "./CardFooter";
 import { EngineValue } from "@/types";
 import ContentMore from "./ContentMore";
 import useOldYoudao from "./useOldYoudao";
 import { useAtom } from "jotai";
 import { settingAtom } from "@/store";
+import WordChat from "./WordChat";
 function RenderYoudaoWord({ searchText }: { searchText: string }) {
  const {t} = useTranslation();
   const [setting] = useAtom(settingAtom);
@@ -208,12 +205,14 @@ export default function RenderWord({
   onRefresh: () => void;
 }) {
   const { t } = useTranslation();
-  // const { setConversationEngine, setConversationShow, setMessageList } =
-  //   useConversationContext();
   const [setting] = useAtom(settingAtom);
   const wordAutoPlay = setting.autoPronounce ?? defaultSetting.autoPronounce;
   const sourceLang =
     setting.sourceLanguage?.language ?? defaultSetting.sourceLanguage.language;
+  const wordSystemPrompt =
+    setting.wordSystemPrompt ?? defaultSetting.wordSystemPrompt;
+  const wordUserContent =
+    setting.wordUserContent ?? defaultSetting.wordUserContent;
   const targetLang = setting.targetLanguage ?? defaultSetting.targetLanguage;
   
   // 已移除会话入口
@@ -242,10 +241,20 @@ export default function RenderWord({
               searchText={searchText}
             />
           )}
-          {currentEngine === "youdao" && (
+            {currentEngine === "youdao" && (
             <>
               <RenderYoudaoWord searchText={searchText} />
             </>
+          )}
+          {currentEngine !== "youdao" && currentEngine !== "collins" && (
+            <div className="mt-2">
+              <WordChat
+                currentEngine={currentEngine}
+                targetLang={targetLang}
+                wordSystemPrompt={wordSystemPrompt}
+                wordUserContent={wordUserContent}
+              />
+            </div>
           )}
           <CardFooter
             currentEngine={currentEngine}

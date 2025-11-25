@@ -2,6 +2,13 @@ import { Language } from "@/types";
 //import { codeBlock, oneLineTrim } from "common-tags";
 
 /**
+ * 当前是否为开发环境（Vite 提供）
+ * - dev：`npm run dev` / `vite` 本地调试
+ * - prod：打包后的浏览器扩展
+ */
+const isDev = import.meta.env.DEV;
+
+/**
  * 格式化中文语言代码
  * 将各种中文变体统一为标准的中文简体代码
  * @param str - 输入的语言代码
@@ -14,8 +21,6 @@ const formatZhCode = (str: string) => {
     return str;
   }
 };
-
-//const isDev = import.meta.env.DEV;
 
 /**
  * 翻译卡片的默认宽度（像素）
@@ -93,26 +98,37 @@ export const defaultSetting = {
   openAIAddress: "https://api.openai.com/v1/chat/completions",
   openAIModel: "gpt-4o",
 
+  // 自定义 AI（Custom AI）相关配置
+  // 在开发环境下预填为 ModelArts DeepSeek-V3 接口，方便本地调试
+  customAIAddress: isDev
+    ? "https://api.modelarts-maas.com/v1/chat/completions"
+    : "",
+  customAIModel: isDev ? "DeepSeek-V3" : "",
+  customAIKey: isDev
+    ? "qFvDurGfHbm1rEtmqhBQKmV2DJ8cof2ThSxPRCgoUHSc1hcPFAV18nuPAqrb_82pv5ZY3PZAFM6Fp4TNHPk7mQ"
+    : "",
+
   // 翻译引擎配置
   engine: "google",
 
   // 语言配置
   targetLanguage: formatZhCode(navigator.language), // 目标翻译语言，基于浏览器语言设置
-  sourceLanguage: {                               // 源语言配置，默认英语
+  sourceLanguage: {
+    // 源语言配置，默认英语
     language: "en",
     name: "English",
   },
 
   // 界面显示配置
-  showSelectionIcon: true,     // 是否显示选中文字的触发图标
+  showSelectionIcon: true, // 是否显示选中文字的触发图标
   interfaceLanguage: navigator.language === "en" ? "en" : "zh", // 界面语言
-  autoPronounce: false,        // 是否自动发音
-  triggerIconSize: 25,         // 触发图标的尺寸（像素）
-  highlightColor: "black",     // 高亮显示颜色
+  autoPronounce: false, // 是否自动发音
+  triggerIconSize: 25, // 触发图标的尺寸（像素）
+  highlightColor: "black", // 高亮显示颜色
   highlightStyle: "dashed" as HighlightName, // 高亮显示样式
 
   // 功能配置
-  autoSaveWord: false,         // 是否自动保存单词
+  autoSaveWord: false, // 是否自动保存单词
 
   // 已注释的配置选项（可能是历史遗留或实验性功能）
   // availableEngines: [
@@ -208,78 +224,94 @@ export const defaultSetting = {
    * compatible: 兼容性（word=单词，sentence=句子，both=都支持）
    * checked: 默认是否启用
    */
-  engineList: [
-    {
-      name: "Youdao",
-      value: "youdao",
-      isChat: false,
-      checked:true,
-      compatible: 'both',
-    },
-    {
-      name: "Collins",
-      value: "collins",
-      isChat: false,
-      checked:true,
-      compatible: 'word',
-    },
-    {
-      name: "Google",
-      value: "google",
-      isChat: false,
-      checked:true,
-      compatible: 'sentence',
-    },
-    {
-      name: "OpenAI",
-      value: "openai",
-      isChat: true,
-      checked:false,
-      compatible: 'both',
-    },
-    {
-      name: "Gemini",
-      value: "gemini",
-      isChat: true,
-      checked:false,
-      compatible: 'both',
-    },
-    {
-      name: "文心一言",
-      value: "wenxin",
-      isChat: true,
-      checked:false,
-      compatible: 'both',
-    },
-    {
-      name: "DeepSeek",
-      value: "deepseek",
-      isChat: true,
-      checked:false,
-      compatible: 'both',
-    },
-    {
-      name: "moonshot",
-      value: "moonshot",
-      isChat: true,
-      checked:false,
-      compatible: 'both',
-    },
-    {
-      name: "DeepLX",
-      value: "deeplx",
-      isChat: false,
-      checked:false,
-      compatible: 'sentence',
-    },
-    {
-      name: "Custom",
-      value: "custom",
-      isChat: true,
-      checked:false,
-      compatible: 'both',
+  engineList: (() => {
+    const base = [
+      {
+        name: "Youdao",
+        value: "youdao",
+        isChat: false,
+        checked: true,
+        compatible: "both",
+      },
+      {
+        name: "Collins",
+        value: "collins",
+        isChat: false,
+        checked: true,
+        compatible: "word",
+      },
+      {
+        name: "Google",
+        value: "google",
+        isChat: false,
+        checked: true,
+        compatible: "sentence",
+      },
+      {
+        name: "OpenAI",
+        value: "openai",
+        isChat: true,
+        checked: false,
+        compatible: "both",
+      },
+      {
+        name: "Gemini",
+        value: "gemini",
+        isChat: true,
+        checked: false,
+        compatible: "both",
+      },
+      {
+        name: "文心一言",
+        value: "wenxin",
+        isChat: true,
+        checked: false,
+        compatible: "both",
+      },
+      {
+        name: "DeepSeek",
+        value: "deepseek",
+        isChat: true,
+        checked: false,
+        compatible: "both",
+      },
+      {
+        name: "moonshot",
+        value: "moonshot",
+        isChat: true,
+        checked: false,
+        compatible: "both",
+      },
+      {
+        name: "DeepLX",
+        value: "deeplx",
+        isChat: false,
+        checked: false,
+        compatible: "sentence",
+      },
+      {
+        name: "Custom",
+        value: "custom",
+        isChat: true,
+        checked: false,
+        compatible: "both",
+      },
+    ];
+
+    // 开发环境：将 Custom AI 提到列表最前面，并默认勾选
+    if (isDev) {
+      const list = [...base];
+      const idx = list.findIndex((item) => item.value === "custom");
+      if (idx !== -1) {
+        const [customItem] = list.splice(idx, 1);
+        list.unshift({ ...customItem, checked: true });
+      }
+      return list;
     }
-  ]
+
+    // 生产环境：保持原有顺序与默认勾选状态
+    return base;
+  })(),
 };
 
 /**
