@@ -116,9 +116,10 @@ export default function ContentScriptApp() {
    * - 在 selectionchange 捕获有效选区后“武装”一次手势窗口
    * - 在限定时间内，若垂直位移超阈值则触发弹卡
    */
-  const isTouchDevice =
-    typeof window !== "undefined" &&
-    ("ontouchstart" in window || (navigator as any)?.maxTouchPoints > 0);
+  const isTouchDevice = typeof window !== "undefined" && (
+    "ontouchstart" in window ||
+    ((navigator as unknown as { maxTouchPoints?: number })?.maxTouchPoints ?? 0) > 0
+  );
   const gestureArmedRef = useRef(false);
   const gestureArmedAtRef = useRef(0);
   const initialScrollYRef = useRef(0);
@@ -239,61 +240,74 @@ export default function ContentScriptApp() {
    * 鼠标事件监听Effect
    * 处理鼠标点击和选择事件
    */
-  useEffect(() => {
-    /**
-     * 鼠标释放事件处理
-     * 当用户释放鼠标按钮时，检查是否选中了文本
-     */
-    const handleMouseUp = async function (event: MouseEvent) {
-      // 如果选区在可编辑元素内（如输入框），则不处理
-      if (isSelectionInEditElement()) {
-        return;
-      }
+ useEffect(() => {
+   /**
+    * 鼠标释放事件处理
+    * 当用户释放鼠标按钮时，检查是否选中了文本
+    */
+   const handleMouseUp = async function (event: MouseEvent) {
+     // 如果选区在可编辑元素内（如输入框），则不处理
+     if (isSelectionInEditElement()) {
+       return;
+     }
 
-      // 获取当前选中的文本并去除首尾空格
-      const selection = window.getSelection()?.toString().trim();
-      
-      // 如果有选中的文本且设置了显示选择图标，则显示触发图标
-      if (
-        selection &&
-        (setting.showSelectionIcon ?? defaultSetting.showSelectionIcon)
-      ) {
-        setTriggerIconShow(true);
-        // TriggerIcon 采用 fixed 定位，使用 client 坐标
-        setTriggerIconPosition({
-          x: event.clientX,
-          y: event.clientY + 10,
-        });
-      }
-    };
+     // 获取当前选中的文本并去除首尾空格
+     const selection = window.getSelection()?.toString().trim();
+     
+     // 如果有选中的文本且设置了显示选择图标，则显示触发图标
+     if (
+       selection &&
+       (setting.showSelectionIcon ?? defaultSetting.showSelectionIcon)
+     ) {
+       setTriggerIconShow(true);
+       // TriggerIcon 采用 fixed 定位，使用 client 坐标
+       setTriggerIconPosition({
+         x: event.clientX,
+         y: event.clientY + 10,
+       });
+     }
+   };
 
-    /**
-     * 鼠标按下事件处理
-     * 用于隐藏触发图标和卡片
-     */
-    const handleMouseDown = function (event: MouseEvent | TouchEvent) {
-      const target = event.target as HTMLElement;
-      // 如果点击的不是扩展相关的元素，则隐藏UI
-      const inWidget = Boolean(target.closest('lingo-link, lingo-link-enhanced'));
-      if (!inWidget) {
-        setTriggerIconShow(false);
-        setCardShow(false);
-      }
-    };
+   /**
+    * 鼠标按下事件处理
+    * 用于隐藏触发图标和卡片
+    */
+   const handleMouseDown = function (event: MouseEvent | TouchEvent) {
+     const target = event.target as HTMLElement;
+     // 如果点击的不是扩展相关的元素，则隐藏UI
+     const inWidget = Boolean(target.closest('lingo-link, lingo-link-enhanced'));
+     if (!inWidget) {
+       setTriggerIconShow(false);
+       setCardShow(false);
+     }
+   };
 
-    // 注册事件监听器
-    document.body.addEventListener("mouseup", handleMouseUp);      // 鼠标释放
-    document.body.addEventListener("mousedown", handleMouseDown);  // 鼠标按下
-    // 移动端补充：点击页面任意位置（非组件内）时隐藏卡片
-    document.body.addEventListener("touchstart", handleMouseDown, { passive: true });
+   /**
+    * 鼠标滚轮事件处理
+    * 当用户滚动鼠标滚轮时，隐藏触发图标
+    */
+   const handleWheel = function () {
+     // 只有当触发图标显示时才处理滚轮事件
+     if (triggerIconShow) {
+       setTriggerIconShow(false);
+     }
+   };
 
-    // 清理事件监听器
-    return () => {
-      document.body.removeEventListener("mouseup", handleMouseUp);
-      document.body.removeEventListener("mousedown", handleMouseDown);
-      document.body.removeEventListener("touchstart", handleMouseDown as any);
-    };
-  }, [setting.showSelectionIcon]);
+   // 注册事件监听器
+   document.body.addEventListener("mouseup", handleMouseUp);      // 鼠标释放
+   document.body.addEventListener("mousedown", handleMouseDown);  // 鼠标按下
+   document.body.addEventListener("wheel", handleWheel, { passive: true });  // 鼠标滚轮
+   // 移动端补充：点击页面任意位置（非组件内）时隐藏卡片
+   document.body.addEventListener("touchstart", handleMouseDown, { passive: true });
+
+   // 清理事件监听器
+   return () => {
+     document.body.removeEventListener("mouseup", handleMouseUp);
+     document.body.removeEventListener("mousedown", handleMouseDown);
+     document.body.removeEventListener("wheel", handleWheel);
+     document.body.removeEventListener("touchstart", handleMouseDown as EventListener);
+   };
+ }, [setting.showSelectionIcon, triggerIconShow]);
 
   /**
    * 选区变化监听Effect
