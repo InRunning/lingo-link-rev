@@ -61,6 +61,7 @@ export default class CustomAIClass implements Chat {
         signal: this.controller.signal,
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'text/event-stream',
           ...(setting.customAIKey ? {Authorization:
             `Bearer ${setting.customAIKey}`}: {})
         },

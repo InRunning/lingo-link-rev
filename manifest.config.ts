@@ -49,7 +49,16 @@ let json: ManifestV3Export = {
     service_worker: "src/background.ts",  // 后台服务工作线程
     type: "module",  // 使用 ES6 模块
   },
-  host_permissions: ["https://www.youdao.com/*", "https://dict.youdao.com/*"],  // 有权限访问的域名
+  // 有权限访问的域名：
+  // - Youdao（单词/句子）
+  // - Google Translate（句子翻译常用）
+  host_permissions: [
+    "https://www.youdao.com/*",
+    "https://dict.youdao.com/*",
+    "https://translate.googleapis.com/*",
+    // 开发期默认的 Custom AI（ModelArts MaaS）
+    "https://api.modelarts-maas.com/*",
+  ],
 };
 // 如果构建目标是 Chrome，添加 Chrome 特定的配置
 if (target === "chrome") {

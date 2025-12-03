@@ -23,11 +23,12 @@ const getPreMessages = ({
   engine: EngineValue;
 }): Message[] => {
   const rolePrompt = sentenceSystemPrompt
-    .replace(/\{targetLanguage\}/g, () => targetLang)
-    .replace(/\{sentence\}/g, () => text);
+    // 兼容占位符两侧可能包含空格的写法：{ targetLanguage } / {sentence}
+    .replace(/\{\s*targetLanguage\s*\}/g, () => targetLang)
+    .replace(/\{\s*sentence\s*\}/g, () => text);
   const contentPrompt = sentenceUserContent
-    .replace(/\{targetLanguage\}/g, () => targetLang)
-    .replace(/\{sentence\}/g, () => text);
+    .replace(/\{\s*targetLanguage\s*\}/g, () => targetLang)
+    .replace(/\{\s*sentence\s*\}/g, () => text);
 
   return [
     {

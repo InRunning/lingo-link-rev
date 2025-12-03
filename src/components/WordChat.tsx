@@ -36,14 +36,15 @@ const getPreMessages = ({
   targetLang: string;
 }): Message[] => {
   const rolePrompt = wordSystemPrompt
-    .replace(/\{targetLanguage\}/g, () => targetLang)
-    .replace(/\{word\}/g, () => currentSelectionInfo.word)
-    .replace(/\{sentence\}/g, () => currentSelectionInfo.context);
+    // 兼容占位符两侧可能包含空格：{ targetLanguage }、{ word }、{ sentence }
+    .replace(/\{\s*targetLanguage\s*\}/g, () => targetLang)
+    .replace(/\{\s*word\s*\}/g, () => currentSelectionInfo.word)
+    .replace(/\{\s*sentence\s*\}/g, () => currentSelectionInfo.context);
 
   const contentPrompt = wordUserContent
-    .replace(/\{targetLanguage\}/g, () => targetLang)
-    .replace(/\{word\}/g, () => currentSelectionInfo.word)
-    .replace(/\{sentence\}/g, () => currentSelectionInfo.context);
+    .replace(/\{\s*targetLanguage\s*\}/g, () => targetLang)
+    .replace(/\{\s*word\s*\}/g, () => currentSelectionInfo.word)
+    .replace(/\{\s*sentence\s*\}/g, () => currentSelectionInfo.context);
 
   return [
     {
