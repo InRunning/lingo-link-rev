@@ -3,7 +3,7 @@
 
 # 项目配置
 PROJECT_NAME := lingo-link-enhanced
-PACKAGE_NAME := $(PROJECT_NAME).zip
+PACKAGE_NAME := click-translate.zip
 BUILD_DIR := dist/chrome
 SRC_DIR := .
 
